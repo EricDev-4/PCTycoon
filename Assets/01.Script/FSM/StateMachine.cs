@@ -7,18 +7,18 @@ public class StateMachine
     {
         if (state == null)
         {
-            Debug.LogWarning("¹Ù²Ù·Á´Â »óÅÂ°¡ nullÀÌ´Ù");
+            Debug.LogWarning("ï¿½Ù²Ù·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ nullï¿½Ì´ï¿½");
             return;
         }
 
-        // ÇöÀç »óÅÂ¿Í ¹Ù²Ü·Á´Â »óÅÂ°¡ °°À¸¸é return
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Ù²Ü·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ return
         if (currentState == state)
         {
-            Debug.LogError($"ÀÌ¹Ì {currentState?.GetType().Name} »óÅÂÀÔ´Ï´Ù.");
+            Debug.LogError($"ï¿½Ì¹ï¿½ {currentState?.GetType().Name} ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.");
             return;
         }
 
-        currentState?.Exit();
+        currentState?.Exit(owner);
         currentState = state;
         currentState?.Enter(owner);
     }

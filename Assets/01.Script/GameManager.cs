@@ -56,13 +56,12 @@ public class GameManager : MonoBehaviour
 
         for (int i =0; i < unitList.Count; i++)
         {
-            if (unitList[i] == null) continue; // null 인 유닛은 건너뜀
+            if (unitList[i] == null) continue;
             if (i >= pcList.Count) break;
 
             unitList[i].Setup(pcList[i]);
         }
 
-        // Unit 이 5 Pc가 3일 때 5명중 3명은PC 할당 2명은 대기
 
     }
 }

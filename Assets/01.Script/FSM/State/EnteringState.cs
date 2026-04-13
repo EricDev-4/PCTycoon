@@ -8,25 +8,33 @@ public class EnteringState : IState
     public void Enter(UnitFSM owner)
     {
         this.owner = owner;
+        if (owner.targetPC != null)
+        {
+            owner.NavAgent.SetDestination(owner.targetPC.interactionPos.transform.position);
+        }
     }
     public void Execute()
     {
-        if (owner.TargetPC != null)
-        {
-            owner.NavAgent.SetDestination(owner.TargetPC.transform.position);
-        }
         Vector2 moveInput = owner.NavAgent.velocity;
         if (moveInput.magnitude > 0.1f)
         {
             owner.SpriteRen.sprite = moveInput.y > 0 ? owner.upSprite : owner.downSprite;
         }
+        
         if(owner.NavAgent.velocity.magnitude > 0.2f && owner.NavAgent.remainingDistance <= 0.5f)
         {
-            owner.TargetPC.isArrived = true;
-            Debug.Log(owner.name + "À¯´ÖÀÌ" + owner.TargetPC.name + "¿¡ µµÂøÇß½À´Ï´Ù!");
+            owner.targetPC.isArrived = true;
+        }
+
+
+        // remainingDistance ëŠ” ëª©ì ì§€ê¹Œì§€ ë‚¨ì€ ê±°ë¦¬ë¥¼ ë°˜í™˜
+        // ë‚¨ì€ ê±°ë¦¬ê°€ stoppingDistance ë³´ë‹¤ ìž‘ì„ ë•Œ
+        if(owner.NavAgent.remainingDistance <= owner.NavAgent.stoppingDistance)
+        {
+            owner.ChangeState(owner.UsingPCState);
         }
     }
-    public void Exit()
+    public void Exit(UnitFSM owner)
     {
 
     }

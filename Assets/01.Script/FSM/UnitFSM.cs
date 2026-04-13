@@ -11,40 +11,52 @@ public class UnitFSM : MonoBehaviour
     private StateMachine unitMachine = new StateMachine();
     private IState enteringState = new EnteringState();
     private IState usingPcState = new UsingPcState();
+    private IState leavingState = new LeavingState();
+
+    public IState UsingPCState => usingPcState;
+    public IState LeavingState => leavingState;
+
     #endregion  
-    [SerializeField] private PC targetPC;
+
+
+    public PC targetPC;
+    public LeavingDoor leavingdoor;
+
     private NavMeshAgent navMeshAgent;
     private SpriteRenderer spriteRenderer;
     public Sprite upSprite, downSprite;
+    public Canvas textBubble;
     [SerializeField] MoneySO moneySO;
 
     public NavMeshAgent NavAgent => navMeshAgent;
     public SpriteRenderer SpriteRen => spriteRenderer;
-    public PC TargetPC { get; private set; } // 쓰기는 나만, 읽기는 모두
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        textBubble = transform.parent.GetComponentInChildren<Canvas>();
+        navMeshAgent = GetComponentInParent<NavMeshAgent>();
+        leavingdoor = FindAnyObjectByType<LeavingDoor>();
         // 회전이 자동으로 설정되면 3D인 xz 평면 기준으로 회전하기 때문에 false
         navMeshAgent.updateRotation = false;
         navMeshAgent.updateUpAxis = false;
-    }
-    public void Setup(PC targetPC)
-    {
-        this.targetPC = targetPC;
-        TargetPC = targetPC;
-        unitMachine.ChangeState(enteringState, this);
+
+        textBubble.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         unitMachine.currentState?.Execute();
-        if(targetPC != null && targetPC.isArrived && unitMachine.currentState != usingPcState)
-        {
-            unitMachine.ChangeState(usingPcState, this);
-        }
+    }
+    public void Setup(PC targetPC)
+    {
+        this.targetPC = targetPC;
+        unitMachine.ChangeState(enteringState, this);
+    }
+
+    public void ChangeState(IState newState)
+    {
+        unitMachine.ChangeState(newState , this);
     }
 
     public void SpawnMoney()
@@ -58,4 +70,6 @@ public class UnitFSM : MonoBehaviour
         if(moneyPickup != null)
             moneyPickup.SetPrice(moneySO.price);
     }
+
+    
 }

@@ -6,37 +6,35 @@ public class PC : MonoBehaviour
 {
     public bool isArrived = false;
     public Slider slider;
-    private float usingTime;
-    private float[] earningTime = { 3f, 30f, 20f };
+    public float usingTime;
+    // private float[] earningTime = { 3f, 30f, 20f };
+    public float earningTime = 20f;
+    public Transform interactionPos;
 
-    private int level = 0;
+    public bool isOccupied = false;
+
+    // [SerializeField] private int level = 0;
     void Start()
     {
-       slider = GetComponentInChildren<Slider>();
+        slider = GetComponentInChildren<Slider>();
         slider.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
-    public bool UsingPc()
+    public bool UpdateUsingTimer()
     {
         usingTime += Time.deltaTime;
-        float value = usingTime / earningTime[level];
+        // float value = usingTime / earningTime[level];
+        float value = usingTime / earningTime;
+
 
         slider.value = value;
 
         if(value >= 1)
         {
-            slider.gameObject.SetActive(false);
             usingTime = 0;
             return true;
         }
         return false;
     }
-
-
     
 }
