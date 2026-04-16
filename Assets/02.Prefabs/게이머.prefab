@@ -29,7 +29,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.045, y: 0.045, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4506107625264696947}
   m_Father: {fileID: 3959120906126649083}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -254,7 +255,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db807372df8a2fe469c83e96d7976f2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitFSM
+  requestedFood: {fileID: 0}
+  foodIcon: {fileID: 0}
   targetPC: {fileID: 0}
+  leavingdoor: {fileID: 0}
   upSprite: {fileID: -5895373076261713910, guid: a11dae1e0dfce024cb8c328b52fd7119, type: 3}
   downSprite: {fileID: 7755911936486328345, guid: a11dae1e0dfce024cb8c328b52fd7119, type: 3}
   textBubble: {fileID: 0}
@@ -347,7 +351,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5187155965182867521}
-  - {fileID: 4506107625264696947}
   m_Father: {fileID: 9207712403369517067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -443,12 +446,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8065623519111324049}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.045, y: 0.045, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3959120906126649083}
+  m_Father: {fileID: 5187155965182867521}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

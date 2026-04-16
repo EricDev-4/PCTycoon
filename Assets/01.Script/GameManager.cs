@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 
     public List<PC> pcList = new List<PC>();
     public List<UnitFSM> unitList = new List<UnitFSM>();
-    //public UnitFSM[] unitFSM;
+    
+    public FoodMenuSO foodMenu;
 
     public int _money;
     public int money

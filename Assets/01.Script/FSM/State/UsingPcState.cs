@@ -7,6 +7,8 @@ public class UsingPcState : IState
     private UnitFSM owner;
     private bool isRequesting = false;
     int requestTime;
+    [SerializeField] private float requestWaitTime = 0f;
+    [SerializeField] private float maxWaitTime = 10f; // 말풍선 타이머 최대 시간
     public void Enter(UnitFSM owner)
     {
         this.owner = owner;
@@ -34,13 +36,32 @@ public class UsingPcState : IState
         }
 
         if(!isRequesting)
-            {
+        {
             if((int)owner.targetPC.usingTime == requestTime)
             {
                 isRequesting = true;
-                owner.textBubble.gameObject.SetActive(true);
-                //TODO : 요청하기
                 
+                //TODO : 요청하기
+                // var foods = GameManager.instance.FoodMenu;
+                owner.textBubble.gameObject.SetActive(true);
+
+                // int n  = GameManager.instance.FoodMenu.foods.Count;
+                // owner.requestedFood = foods[Random.Range(0, )];
+                var food = GameManager.instance.foodMenu.foods;
+                int n = Random.Range(0 , food.Count);
+                owner.requestedFood = food[n];
+                owner.foodIcon.sprite = food[n].icon;
+            }
+        }
+        else
+        {
+            // 아래서 위로 차오름
+            requestWaitTime += Time.deltaTime;
+            owner.bubbleFillMask.fillAmount = requestWaitTime / maxWaitTime;
+
+            if(requestWaitTime >= maxWaitTime)
+            {
+                // TODO : Angry 상태 전환
             }
         }
     }

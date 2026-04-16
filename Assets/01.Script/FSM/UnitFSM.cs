@@ -1,7 +1,4 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using Unity.VisualScripting;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,15 +15,22 @@ public class UnitFSM : MonoBehaviour
 
     #endregion  
 
-
+    #region References
+    public FoodSO requestedFood;
+    public Image foodIcon;
     public PC targetPC;
     public LeavingDoor leavingdoor;
+    #endregion
 
+    #region Fields
     private NavMeshAgent navMeshAgent;
     private SpriteRenderer spriteRenderer;
     public Sprite upSprite, downSprite;
     public Canvas textBubble;
+    public Image bubbleFillMask;
+    // public 
     [SerializeField] MoneySO moneySO;
+    #endregion
 
     public NavMeshAgent NavAgent => navMeshAgent;
     public SpriteRenderer SpriteRen => spriteRenderer;
@@ -35,6 +39,7 @@ public class UnitFSM : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         textBubble = transform.parent.GetComponentInChildren<Canvas>();
+        bubbleFillMask = textBubble.transform.Find("TextBubble_Image/TimerFill_Mask").GetComponent<Image>();
         navMeshAgent = GetComponentInParent<NavMeshAgent>();
         leavingdoor = FindAnyObjectByType<LeavingDoor>();
         // 회전이 자동으로 설정되면 3D인 xz 평면 기준으로 회전하기 때문에 false
@@ -70,6 +75,4 @@ public class UnitFSM : MonoBehaviour
         if(moneyPickup != null)
             moneyPickup.SetPrice(moneySO.price);
     }
-
-    
 }
