@@ -12,7 +12,8 @@ public class PC : MonoBehaviour
     public float earningTime = 20f;
     public Transform interactionPos;
 
-    public bool isOccupied = false;
+    // PC가 사용중인가?
+    public bool isUsing = false;
 
     // [SerializeField] private int level = 0;
     void Start()

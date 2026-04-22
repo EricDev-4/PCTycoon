@@ -1,8 +1,6 @@
-using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.AI;
-using Unity.VisualScripting;
-using System.Security.Cryptography;
+using UnityEngine.UI;
 
 public class UnitFSM : MonoBehaviour
 {
@@ -14,11 +12,9 @@ public class UnitFSM : MonoBehaviour
 
     public IState UsingPCState => usingPcState;
     public IState LeavingState => leavingState;
-
-    #endregion  
+    #endregion
 
     #region References
-
     public FoodSO requestedFood;
     public FoodSO receivedFood;
     public Image foodIcon;
@@ -33,8 +29,9 @@ public class UnitFSM : MonoBehaviour
     public Sprite upSprite, downSprite;
     public Canvas textBubble;
     public Image bubbleFillMask;
-    // public 
     [SerializeField] MoneySO moneySO;
+    [SerializeField] private string moneyPoolTag = "Money";
+    [SerializeField] private int moneyPoolPrewarmCount = 10;
     #endregion
 
     public bool isServed = false;
@@ -42,36 +39,114 @@ public class UnitFSM : MonoBehaviour
     public NavMeshAgent NavAgent => navMeshAgent;
     public SpriteRenderer SpriteRen => spriteRenderer;
 
-    private void Start()
+    private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        textBubble = transform.parent.GetComponentInChildren<Canvas>();
-        bubbleFillMask = textBubble.transform.Find("TextBubble_Image/TimerFill_Mask").GetComponent<Image>();
-        navMeshAgent = GetComponentInParent<NavMeshAgent>();
-        leavingdoor = FindAnyObjectByType<LeavingDoor>();
-        interactiveColl = GetComponent<BoxCollider2D>();
-        
-        // ȸ���� �ڵ����� �����Ǹ� 3D�� xz ��� �������� ȸ���ϱ� ������ false
-        navMeshAgent.updateRotation = false;
-        navMeshAgent.updateUpAxis = false;
+        CacheReferences();
+    }
 
-        textBubble.gameObject.SetActive(false);
-        // interactiveColl.gameObject.SetActive(false);
+    private void OnEnable()
+    {
+        CacheReferences();
+        ResetForSpawn();
+    }
+
+    private void OnDisable()
+    {
+        ResetInteractionState();
+        ReleasePC();
+
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.ResetPath();
+        }
+
+        unitMachine.currentState = null;
+    }
+
+    private void CacheReferences()
+    {
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        if (interactiveColl == null)
+        {
+            interactiveColl = GetComponent<BoxCollider2D>();
+        }
+
+        if (navMeshAgent == null)
+        {
+            navMeshAgent = GetComponentInParent<NavMeshAgent>();
+        }
+
+        if (textBubble == null)
+        {
+            Transform parent = transform.parent;
+            if (parent != null)
+            {
+                textBubble = parent.GetComponentInChildren<Canvas>(true);
+            }
+            else
+            {
+                textBubble = GetComponentInChildren<Canvas>(true);
+            }
+        }
+
+        if (bubbleFillMask == null && textBubble != null)
+        {
+            Transform maskTransform = textBubble.transform.Find("TextBubble_Image/TimerFill_Mask");
+            if (maskTransform != null)
+            {
+                bubbleFillMask = maskTransform.GetComponent<Image>();
+            }
+        }
+
+        if (leavingdoor == null)
+        {
+            leavingdoor = FindAnyObjectByType<LeavingDoor>();
+        }
+
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.updateRotation = false;
+            navMeshAgent.updateUpAxis = false;
+        }
     }
 
     private void Update()
     {
         unitMachine.currentState?.Execute();
     }
+
     public void Setup(PC targetPC)
     {
+        CacheReferences();
+        ResetInteractionState();
+
+        if (targetPC == null)
+        {
+            Debug.LogWarning("UnitFSM: Setup called with null PC.");
+            return;
+        }
+
+        targetPC.isTargeted = true;
+        targetPC.isArrived = false;
+
         this.targetPC = targetPC;
+
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.isStopped = false;
+            navMeshAgent.ResetPath();
+        }
+
         unitMachine.ChangeState(enteringState, this);
     }
 
     public void ChangeState(IState newState)
     {
-        unitMachine.ChangeState(newState , this);
+        unitMachine.ChangeState(newState, this);
     }
 
     public void ResetTextBubble()
@@ -87,50 +162,127 @@ public class UnitFSM : MonoBehaviour
         }
     }
 
+    public void ReturnToPool()
+    {
+        var pooledObject = GetComponentInParent<PooledObject>();
+        GameObject root = pooledObject != null
+            ? pooledObject.gameObject
+            : (navMeshAgent != null ? navMeshAgent.gameObject : gameObject);
+
+        if (ObjectPool.Instance != null)
+        {
+            ObjectPool.Instance.Despawn(root);
+            return;
+        }
+
+        root.SetActive(false);
+    }
+
+    public void ReleasePC()
+    {
+        if (targetPC == null) return;
+
+        targetPC.isUsing = false;
+        targetPC.isTargeted = false;
+        targetPC.isArrived = false;
+
+        if (targetPC.slider != null)
+        {
+            targetPC.slider.gameObject.SetActive(false);
+        }
+
+        targetPC.usingTime = 0f;
+        targetPC = null;
+    }
+
+    private void ResetForSpawn()
+    {
+        ResetInteractionState();
+
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.ResetPath();
+            navMeshAgent.isStopped = false;
+        }
+
+        unitMachine.currentState = null;
+        targetPC = null;
+    }
+
+    public void ResetInteractionState()
+    {
+        isServed = false;
+        requestedFood = null;
+        receivedFood = null;
+
+        if (foodIcon != null)
+        {
+            foodIcon.sprite = null;
+            Color c = foodIcon.color;
+            c.a = 0f;
+            foodIcon.color = c;
+        }
+
+        ResetTextBubble();
+
+        if (interactiveColl != null)
+        {
+            interactiveColl.enabled = false;
+        }
+    }
+
     public void SpawnMoney(int price)
     {
+        if (moneySO == null || moneySO.prefab == null) return;
+
+        int spawnPrice = price != 0 ? price : moneySO.price;
+
         float randomX = Random.Range(2f, 6f) * (Random.value > 0.5f ? 1f : -1f);
         float randomY = Random.Range(-4f, -4.5f);
         Vector3 targetPos = transform.position + new Vector3(randomX, randomY, 0f);
 
-        GameObject ins = Instantiate(moneySO.prefab, targetPos, Quaternion.identity);
-        MoneyPickup moneyPickup = ins.GetComponent<MoneyPickup>();
-        if(moneyPickup != null)
+        GameObject ins = null;
+        if (ObjectPool.Instance != null)
         {
-            if(price != 0)
-            {
-                moneyPickup.SetPrice(price);
-                return;
-            }
-            else
-            {
-                moneyPickup.SetPrice(moneySO.price);
-                return;
-            }
+            string poolTag = string.IsNullOrWhiteSpace(moneyPoolTag) ? "Money" : moneyPoolTag;
+            int prewarmCount = Mathf.Max(0, moneyPoolPrewarmCount);
+            ObjectPool.Instance.RegisterPool(poolTag, moneySO.prefab, prewarmCount);
+            ins = ObjectPool.Instance.SpawnFormPool(poolTag, targetPos);
+        }
+
+        if (ins == null)
+        {
+            ins = Instantiate(moneySO.prefab, targetPos, Quaternion.identity);
+        }
+
+        MoneyPickup moneyPickup = ins.GetComponentInChildren<MoneyPickup>(true);
+        if (moneyPickup != null)
+        {
+            moneyPickup.SetPrice(spawnPrice);
         }
     }
 
     // Serving
     void OnTriggerEnter2D(Collider2D collider)
     {
-            Player player = collider.GetComponent<Player>();
-            if(player == null) return; // Player �ƴ� ������Ʈ ����
+        Player player = collider.GetComponent<Player>();
+        if (player == null) return;
 
-            if(player.servingFood != null && requestedFood != null)
+        if (player.servingFood != null && requestedFood != null)
+        {
+            receivedFood = player.servingFood;
+            isServed = true;
+
+            if (requestedFood.foodName == receivedFood.foodName)
             {
-                receivedFood = player.servingFood;
-                isServed = true;
-
-                if(requestedFood.foodName == receivedFood.foodName)
-                {
-                    SpawnMoney(receivedFood.foodPrice);
-                    ResetTextBubble();
-                    player.ClearFood();
-                }
-                else
-                {
-                    // ChangeState(AngryState);
-                }
+                SpawnMoney(receivedFood.foodPrice);
+                ResetTextBubble();
+                player.ClearFood();
             }
+            else
+            {
+                // ChangeState(AngryState);
+            }
+        }
     }
 }
