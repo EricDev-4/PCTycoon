@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private Player player;
+
     [SerializeField] private float moveSpeed = 5f;
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -11,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        player = GetComponent<Player>();
         rb= GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -20,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput.magnitude > 0.1f)
         {
             spriteRenderer.sprite = moveInput.y > 0 ? upSprite : downSprite;
+            player.foodSprite.sortingOrder = moveInput.y > 0 ? 0 : 101; 
         }
     }
 

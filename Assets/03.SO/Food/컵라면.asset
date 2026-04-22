@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: "\uCEF5\uB77C\uBA74"
   m_EditorClassIdentifier: Assembly-CSharp::FoodSO
   foodName: "\uCEF5\uB77C\uBA74"
-  icon: {fileID: 7425438597007568885, guid: 179cad5da5efe33419402e55d52471f2, type: 3}
+  foodIcon: {fileID: -4981648361080176330, guid: f5abfed97e52a0b4dbdacf02fb68ab2d, type: 3}
   cookTime: 7
-  price: 1300
+  foodPrice: 0

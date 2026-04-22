@@ -4,7 +4,7 @@ using UnityEngine;
 public class FoodSO : ScriptableObject
 {
     public string foodName;
-    public Sprite icon;
+    public Sprite foodIcon;
     public float cookTime;
-    public int price;
+    public int foodPrice;
 }

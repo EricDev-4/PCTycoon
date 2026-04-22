@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PC : MonoBehaviour
 {
+    public bool isTargeted = false;
     public bool isArrived = false;
     public Slider slider;
     public float usingTime;

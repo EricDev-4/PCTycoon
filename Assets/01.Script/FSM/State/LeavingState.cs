@@ -19,6 +19,8 @@ public class LeavingState : IState
         {
             owner.SpriteRen.sprite = moveInput.y > 0 ? owner.upSprite : owner.downSprite;
         }
+
+        
     }
     public void Exit(UnitFSM owner)
     {

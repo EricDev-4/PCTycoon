@@ -136,7 +136,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_0"
+      name: Truth_D
       rect:
         serializedVersion: 2
         x: 302
@@ -158,7 +158,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_2"
+      name: Truth_U
       rect:
         serializedVersion: 2
         x: 813
@@ -180,7 +180,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_3"
+      name: Gamer_D
       rect:
         serializedVersion: 2
         x: 1254
@@ -202,11 +202,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_5"
+      name: Gamer_U
       rect:
         serializedVersion: 2
-        x: 1697
-        y: 1292
+        x: 1690
+        y: 1296
         width: 290
         height: 601
       alignment: 0
@@ -224,11 +224,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_6"
+      name: Student_D
       rect:
         serializedVersion: 2
         x: 2040
-        y: 1281
+        y: 1295
         width: 308
         height: 653
       alignment: 0
@@ -246,11 +246,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uCE90\uB9AD\uD130\uB4E4_8"
+      name: Student_U
       rect:
         serializedVersion: 2
-        x: 2484
-        y: 1273
+        x: 2481
+        y: 1284
         width: 289
         height: 601
       alignment: 0
@@ -281,19 +281,20 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "\uCE90\uB9AD\uD130\uB4E4_0": -7407475296879317317
+      0: 7755911936486328345
+      Gamer_D: 7755911936486328345
+      Gamer_U: -5895373076261713910
+      Student_D: -6896440654920729203
+      Student_U: 4964168044749683016
+      Truth_D: -7407475296879317317
+      Truth_U: 7758755800396199314
       "\uCE90\uB9AD\uD130\uB4E4_1": 7049536961500000087
       "\uCE90\uB9AD\uD130\uB4E4_10": 1520387425435355720
       "\uCE90\uB9AD\uD130\uB4E4_11": 7192759877865629726
       "\uCE90\uB9AD\uD130\uB4E4_12": 5813348936622760395
       "\uCE90\uB9AD\uD130\uB4E4_13": 1573334548
-      "\uCE90\uB9AD\uD130\uB4E4_2": 7758755800396199314
-      "\uCE90\uB9AD\uD130\uB4E4_3": 7755911936486328345
       "\uCE90\uB9AD\uD130\uB4E4_4": -1485218755002986771
-      "\uCE90\uB9AD\uD130\uB4E4_5": -5895373076261713910
-      "\uCE90\uB9AD\uD130\uB4E4_6": -6896440654920729203
       "\uCE90\uB9AD\uD130\uB4E4_7": 596202881747566163
-      "\uCE90\uB9AD\uD130\uB4E4_8": 4964168044749683016
       "\uCE90\uB9AD\uD130\uB4E4_9": 7617573404678914235
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

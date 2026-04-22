@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SocialPlatforms;
@@ -30,13 +31,16 @@ public class UsingPcState : IState
         → Exit()에서 SpawnMoney, 슬라이더 끄기 등 정리
         → LeavingState.Enter() 실행 
         */
+        if(owner.targetPC == null) return;
+
         if(owner.targetPC.UpdateUsingTimer())
         {
             owner.ChangeState(owner.LeavingState);
         }
 
-        if(!isRequesting)
+        if(!isRequesting && owner.targetPC != null)
         {
+            // pc 사용 시간이랑 랜덤 요청 시간이랑 같으면
             if((int)owner.targetPC.usingTime == requestTime)
             {
                 isRequesting = true;
@@ -49,12 +53,25 @@ public class UsingPcState : IState
                 // owner.requestedFood = foods[Random.Range(0, )];
                 var food = GameManager.instance.foodMenu.foods;
                 int n = Random.Range(0 , food.Count);
+                owner.foodIcon.sprite = food[n].foodIcon;
+                owner.foodIcon.color = new Color(1,1,1,1);
                 owner.requestedFood = food[n];
-                owner.foodIcon.sprite = food[n].icon;
+                owner.interactiveColl.gameObject.SetActive(true);
             }
         }
         else
         {
+            if(owner.isServed)
+            {
+                owner.requestedFood = null;
+                owner.receivedFood = null;
+                owner.ResetTextBubble();
+                requestWaitTime = 0;
+                isRequesting = false;
+                owner.isServed = false;
+                return;
+            }
+
             // 아래서 위로 차오름
             requestWaitTime += Time.deltaTime;
             owner.bubbleFillMask.fillAmount = requestWaitTime / maxWaitTime;
@@ -62,13 +79,16 @@ public class UsingPcState : IState
             if(requestWaitTime >= maxWaitTime)
             {
                 // TODO : Angry 상태 전환
+                owner.interactiveColl.gameObject.SetActive(false);
             }
         }
+        
     }
     public void Exit(UnitFSM owner)
     {
         // owner.usingPC = false;
-        owner.SpawnMoney();
+        Debug.Log("Exit");
+        owner.SpawnMoney(0);
         owner.targetPC.isOccupied = false;
         owner.targetPC.slider.gameObject.SetActive(false);
         // owner.ChangeState(owner.LeavingState);

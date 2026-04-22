@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviour
             OnMoneyChanged?.Invoke(_money);
         }
     }
+
+
+
+
+    [SerializeField] Transform door;
+    private float time;
     private void FindPC()
     {
         PC[] found = FindObjectsByType<PC>(FindObjectsSortMode.None);
@@ -62,7 +68,19 @@ public class GameManager : MonoBehaviour
 
             unitList[i].Setup(pcList[i]);
         }
+    }
 
+    void Update()
+    {
+        
+        time += Time.deltaTime;
 
+        if(time > 3f)
+        {
+            time = 0;
+            GameObject obj = ObjectPool.Instance.SpawnFormPool("Gamer" , door.position);;
+            
+
+        }
     }
 }
