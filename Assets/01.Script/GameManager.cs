@@ -62,18 +62,18 @@ public class GameManager : MonoBehaviour
         FindPC();
         FindUnit();
 
-        for (int i =0; i < unitList.Count; i++)
-        {
-            if (unitList[i] == null) continue;
-            if (i >= pcList.Count) break;
+        // for (int i =0; i < unitList.Count; i++)
+        // {
+        //     if (unitList[i] == null) continue;
+        //     if (i >= pcList.Count) break;
 
-            PC pc = pcList[i];
-            if (pc == null) continue;
+        //     PC pc = pcList[i];
+        //     if (pc == null) continue;
 
-            pc.isTargeted = true;
-            pc.isArrived = false;
-            unitList[i].Setup(pc);
-        }
+        //     pc.isTargeted = true;
+        //     pc.isArrived = false;
+        //     unitList[i].Setup(pc);
+        // }
     }
 
     void Update()
@@ -109,22 +109,19 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    private bool TrySpawnAndAssignPc(string poolTag, Vector3 spawnPosition, PC pc)
+    private void TrySpawnAndAssignPc(string poolTag, Vector3 spawnPosition, PC pc)
     {
-        GameObject spawned = ObjectPool.Instance.SpawnFormPool(poolTag, spawnPosition);
-        if (spawned == null) return false;
+        GameObject spawned = ObjectPool.Instance.SpawnFormPool(poolTag, spawnPosition); // poolDictionary 오브젝트 반환
+        if (spawned == null) return;
 
-        UnitFSM unit = spawned.GetComponentInChildren<UnitFSM>();
+        UnitFSM unit = spawned.GetComponentInChildren<UnitFSM>(); // 스폰된 오브젝트에서 UnitFSM을 찾음
         if (unit == null)
         {
             Debug.LogWarning($"GameManager: Spawned '{poolTag}' doesn't have UnitFSM. Despawning.");
             ObjectPool.Instance.Despawn(spawned);
-            return false;
+            return;
         }
-
-        pc.isTargeted = true;
-        pc.isArrived = false;
-        unit.Setup(pc);
-        return true;
+        unit.AssignToPC(pc); // 해당 유닛이 PC를 목표로 행동하게 AssignToPC
+        return;
     }
 }

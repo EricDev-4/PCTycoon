@@ -119,7 +119,7 @@ public class UnitFSM : MonoBehaviour
         unitMachine.currentState?.Execute();
     }
 
-    public void Setup(PC targetPC)
+    public void AssignToPC(PC targetPC)
     {
         CacheReferences();
         ResetInteractionState();

@@ -44,12 +44,12 @@ public class ObjectPool : MonoBehaviour
         GameObject objectToSpawn;
         if (poolDictionary[tag].Count == 0)
         {
-            // Optional behavior: instantiate when pool is empty.
+            // objectPool 이 비어있으면 새로 만들어냄
             objectToSpawn = CreateNewObject(tag);
             if (objectToSpawn == null) return null;
         }
-        else
-        {
+        else // 비어있지 않으면 poolDictionary 에서 빼냄
+        { 
             objectToSpawn = poolDictionary[tag].Dequeue();
         }
 
