@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 8010667979888756742}
   - component: {fileID: 7982569753087349505}
   - component: {fileID: 2810070558851538342}
+  - component: {fileID: 3377444444444444444}
   m_Layer: 6
   m_Name: Unit
   m_TagString: Unit
@@ -263,12 +264,54 @@ MonoBehaviour:
   targetPC: {fileID: 0}
   leavingdoor: {fileID: 0}
   interactiveColl: {fileID: 5973214239742942644}
+  movementMotion: {fileID: 3377444444444444444}
   upSprite: {fileID: 7758755800396199314, guid: a11dae1e0dfce024cb8c328b52fd7119, type: 3}
   downSprite: {fileID: -7407475296879317317, guid: a11dae1e0dfce024cb8c328b52fd7119, type: 3}
   textBubble: {fileID: 0}
   bubbleFillMask: {fileID: 0}
   moneySO: {fileID: 11400000, guid: b294fdf7426472441b19f212aa8e9b7f, type: 2}
   isServed: 0
+--- !u!114 &3377444444444444444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5651825813848430956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5fa6f355d8c4204a9c420d9d9d8f26e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingCharacterMotion
+  visualRoot: {fileID: 3695705312407464508}
+  movementThreshold: 0.05
+  pixelsPerUnit: 100
+  bouncePixels: 3
+  bounceDuration: 0.72
+  swayPixels: 1.5
+  swayDuration: 0.95
+  swayRotationDegrees: 1.75
+  loopEase: 4
+  movingScale: {x: 1.03, y: 0.97}
+  squishInDuration: 0.16
+  squishOutDuration: 0.3
+  squishInEase: 3
+  squishOutEase: 3
+  trailingPixels: 1.2
+  verticalTrailingMultiplier: 0.65
+  trailingResponse: 0.18
+  tiltDegrees: 3.5
+  tiltResponse: 0.18
+  directionChangeThreshold: 0.18
+  turnMinAngle: 18
+  turnPulseCooldown: 0.18
+  turnBackStretchPixels: 2.5
+  turnScale: {x: 1.02, y: 0.985}
+  turnTiltDegrees: 1.2
+  turnOutDuration: 0.12
+  turnRecoverDuration: 0.22
+  settleDuration: 0.25
+  settleEase: 3
 --- !u!1 &5828065175934332313
 GameObject:
   m_ObjectHideFlags: 0

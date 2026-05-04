@@ -28,12 +28,6 @@ public class LeavingState : IState
         NavMeshAgent agent = owner.NavAgent;
         if (agent == null) return;
 
-        Vector2 moveInput = agent.velocity;
-        if (moveInput.magnitude > 0.1f && owner.SpriteRen != null)
-        {
-            owner.SpriteRen.sprite = moveInput.y > 0 ? owner.upSprite : owner.downSprite;
-        }
-
         if (hasReturned) return;
 
         if (HasReachedExit(agent))

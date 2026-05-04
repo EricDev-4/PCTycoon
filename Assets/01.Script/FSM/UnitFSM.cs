@@ -26,6 +26,7 @@ public class UnitFSM : MonoBehaviour
     public BoxCollider2D interactiveColl;
     private NavMeshAgent navMeshAgent;
     private SpriteRenderer spriteRenderer;
+    [SerializeField] private FloatingCharacterMotion movementMotion;
     public Sprite upSprite, downSprite;
     public Canvas textBubble;
     public Image bubbleFillMask;
@@ -68,6 +69,11 @@ public class UnitFSM : MonoBehaviour
         if (spriteRenderer == null)
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        if (movementMotion == null)
+        {
+            movementMotion = GetComponent<FloatingCharacterMotion>();
         }
 
         if (interactiveColl == null)
@@ -117,6 +123,22 @@ public class UnitFSM : MonoBehaviour
     private void Update()
     {
         unitMachine.currentState?.Execute();
+        UpdateMovementPresentation();
+    }
+
+    private void UpdateMovementPresentation()
+    {
+        Vector2 moveInput = navMeshAgent != null ? (Vector2)navMeshAgent.velocity : Vector2.zero;
+        if (moveInput.magnitude > 0.1f && spriteRenderer != null)
+        {
+            spriteRenderer.sprite = moveInput.y > 0 ? upSprite : downSprite;
+            if (Mathf.Abs(moveInput.x) > 0.01f)
+            {
+                spriteRenderer.flipX = moveInput.x > 0f;
+            }
+        }
+
+        movementMotion?.SetMovement(moveInput);
     }
 
     public void AssignToPC(PC targetPC)

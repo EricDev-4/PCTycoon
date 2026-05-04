@@ -1,46 +1,22 @@
 fileFormatVersion: 2
-guid: a11dae1e0dfce024cb8c328b52fd7119
+guid: ff9552fc17411e04d87d041fadc78d88
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7407475296879317317
-    second: "\uCE90\uB9AD\uD130\uB4E4_0"
+      213: -5408362210846504297
+    second: "\uB2E8\uACC4\uBCC4PC_0"
   - first:
-      213: 7049536961500000087
-    second: "\uCE90\uB9AD\uD130\uB4E4_1"
+      213: -9184522457564138646
+    second: "\uB2E8\uACC4\uBCC4PC_1"
   - first:
-      213: 7758755800396199314
-    second: "\uCE90\uB9AD\uD130\uB4E4_2"
+      213: -3070663183740961016
+    second: "\uB2E8\uACC4\uBCC4PC_2"
   - first:
-      213: 7755911936486328345
-    second: "\uCE90\uB9AD\uD130\uB4E4_3"
+      213: -2057508526500319916
+    second: "\uB2E8\uACC4\uBCC4PC_3"
   - first:
-      213: -1485218755002986771
-    second: "\uCE90\uB9AD\uD130\uB4E4_4"
-  - first:
-      213: -5895373076261713910
-    second: "\uCE90\uB9AD\uD130\uB4E4_5"
-  - first:
-      213: -6896440654920729203
-    second: "\uCE90\uB9AD\uD130\uB4E4_6"
-  - first:
-      213: 596202881747566163
-    second: "\uCE90\uB9AD\uD130\uB4E4_7"
-  - first:
-      213: 4964168044749683016
-    second: "\uCE90\uB9AD\uD130\uB4E4_8"
-  - first:
-      213: 7617573404678914235
-    second: "\uCE90\uB9AD\uD130\uB4E4_9"
-  - first:
-      213: 1520387425435355720
-    second: "\uCE90\uB9AD\uD130\uB4E4_10"
-  - first:
-      213: 7192759877865629726
-    second: "\uCE90\uB9AD\uD130\uB4E4_11"
-  - first:
-      213: 5813348936622760395
-    second: "\uCE90\uB9AD\uD130\uB4E4_12"
+      213: -4858669592205742189
+    second: "\uB2E8\uACC4\uBCC4PC_4"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -87,7 +63,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -136,13 +112,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Truth_D
+      name: "\uB2E8\uACC4\uBCC4PC_1"
       rect:
         serializedVersion: 2
-        x: 302
-        y: 1300
-        width: 387
-        height: 653
+        x: 508
+        y: 519
+        width: 435
+        height: 401
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,20 +127,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bbee607c67c533990800000000000000
-      internalID: -7407475296879317317
+      spriteID: a63ba4d8c750a8080800000000000000
+      internalID: -9184522457564138646
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Truth_U
+      name: "\uB2E8\uACC4\uBCC4PC_2"
       rect:
         serializedVersion: 2
-        x: 813
-        y: 1292
-        width: 289
-        height: 601
+        x: 993
+        y: 519
+        width: 452
+        height: 427
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +149,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 295fd95fa43acab60800000000000000
-      internalID: 7758755800396199314
+      spriteID: 80fff3c7a10d265d0800000000000000
+      internalID: -3070663183740961016
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gamer_D
+      name: "\uB2E8\uACC4\uBCC4PC_3"
       rect:
         serializedVersion: 2
-        x: 1254
-        y: 1300
-        width: 320
-        height: 654
+        x: 69
+        y: 13
+        width: 598
+        height: 406
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 918ca7b40d882ab60800000000000000
-      internalID: 7755911936486328345
+      spriteID: 45d6c9375e24273e0800000000000000
+      internalID: -2057508526500319916
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Gamer_U
+      name: "\uB2E8\uACC4\uBCC4PC_4"
       rect:
         serializedVersion: 2
-        x: 1690
-        y: 1296
-        width: 290
-        height: 601
+        x: 729
+        y: 12
+        width: 758
+        height: 440
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,52 +193,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a08c4031c6d6f2ea0800000000000000
-      internalID: -5895373076261713910
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Student_D
-      rect:
-        serializedVersion: 2
-        x: 2040
-        y: 1295
-        width: 308
-        height: 653
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d8d33e463cbea40a0800000000000000
-      internalID: -6896440654920729203
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Student_U
-      rect:
-        serializedVersion: 2
-        x: 2481
-        y: 1284
-        width: 289
-        height: 601
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 84976a0198444e440800000000000000
-      internalID: 4964168044749683016
+      spriteID: 39fa59b8fb9829cb0800000000000000
+      internalID: -4858669592205742189
       vertices: []
       indices: 
       edges: []
@@ -271,7 +203,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 07d1b7d50a0a72147929457391afe172
+    spriteID: c6a5dc92dfa5c1b489621984d1cc9e09
     internalID: 0
     vertices: []
     indices: 
@@ -281,21 +213,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      0: 7755911936486328345
-      Gamer_D: 7755911936486328345
-      Gamer_U: -5895373076261713910
-      Student_D: -6896440654920729203
-      Student_U: 4964168044749683016
-      Truth_D: -7407475296879317317
-      Truth_U: 7758755800396199314
-      "\uCE90\uB9AD\uD130\uB4E4_1": 7049536961500000087
-      "\uCE90\uB9AD\uD130\uB4E4_10": 1520387425435355720
-      "\uCE90\uB9AD\uD130\uB4E4_11": 7192759877865629726
-      "\uCE90\uB9AD\uD130\uB4E4_12": 5813348936622760395
-      "\uCE90\uB9AD\uD130\uB4E4_13": 1573334548
-      "\uCE90\uB9AD\uD130\uB4E4_4": -1485218755002986771
-      "\uCE90\uB9AD\uD130\uB4E4_7": 596202881747566163
-      "\uCE90\uB9AD\uD130\uB4E4_9": 7617573404678914235
+      "\uB2E8\uACC4\uBCC4PC_0": -5408362210846504297
+      "\uB2E8\uACC4\uBCC4PC_1": -9184522457564138646
+      "\uB2E8\uACC4\uBCC4PC_2": -3070663183740961016
+      "\uB2E8\uACC4\uBCC4PC_3": -2057508526500319916
+      "\uB2E8\uACC4\uBCC4PC_4": -4858669592205742189
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
