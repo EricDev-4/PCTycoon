@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3691d051b78539c4ea2daecbc18ebebb, type: 3}
   m_Name: "\uCEF5\uB77C\uBA74"
   m_EditorClassIdentifier: Assembly-CSharp::FoodSO
+  prefab: {fileID: 932602591892683032, guid: d6a1969bbfc1e164cab402debda48b22, type: 3}
   foodName: "\uCEF5\uB77C\uBA74"
   foodIcon: {fileID: -4981648361080176330, guid: f5abfed97e52a0b4dbdacf02fb68ab2d, type: 3}
-  cookTime: 7
-  foodPrice: 0
+  cookTime: 3
+  foodPrice: 2000
