@@ -25,7 +25,7 @@ public class UsingPcState : IState
         owner.targetPC.isUsing = true;
         owner.targetPC.isTargeted = false;
 
-        int minTime = 1;
+        int minTime = 3;
         int maxTime = (int)owner.targetPC.earningTime - 5;
         requestTime = maxTime <= minTime ? minTime : Random.Range(minTime, maxTime);
     }
@@ -48,13 +48,13 @@ public class UsingPcState : IState
 
                 if (owner.textBubble != null)
                 {
-                    owner.textBubble.gameObject.SetActive(true);
+                    owner.textBubble.gameObject.SetActive(true); // 요청 말풍선 on
                 }
 
-                var foods = GameManager.instance != null ? GameManager.instance.foodMenu?.foods : null;
+                var foods = GameManager.instance != null ? GameManager.instance.foodMenu?.foods : null; // Food List 가져옴 
                 if (foods != null && foods.Count > 0)
                 {
-                    int n = Random.Range(0, foods.Count);
+                    int n = Random.Range(0, foods.Count); // FoodList의 랜덤 food
                     owner.requestedFood = foods[n];
 
                     if (owner.foodIcon != null)
@@ -69,7 +69,6 @@ public class UsingPcState : IState
                     owner.interactiveColl.enabled = true;
                 }
             }
-
             return;
         }
 

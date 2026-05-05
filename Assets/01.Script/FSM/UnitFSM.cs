@@ -20,6 +20,7 @@ public class UnitFSM : MonoBehaviour
     public Image foodIcon;
     public PC targetPC;
     public LeavingDoor leavingdoor;
+
     #endregion
 
     #region Fields
@@ -137,7 +138,6 @@ public class UnitFSM : MonoBehaviour
                 spriteRenderer.flipX = moveInput.x > 0f;
             }
         }
-
         movementMotion?.SetMovement(moveInput);
     }
 
@@ -182,6 +182,31 @@ public class UnitFSM : MonoBehaviour
         {
             textBubble.gameObject.SetActive(false);
         }
+    }
+
+    public bool TryServe(FoodSO food)
+    {
+        if (food == null || requestedFood == null)
+        {
+            return false;
+        }
+
+        receivedFood = food;
+        if (requestedFood.foodName != receivedFood.foodName)
+        {
+            return false;
+        }
+
+        isServed = true;
+        SpawnMoney(receivedFood.foodPrice);
+        ResetTextBubble();
+
+        if (interactiveColl != null)
+        {
+            interactiveColl.enabled = false;
+        }
+
+        return true;
     }
 
     public void ReturnToPool()
@@ -231,6 +256,7 @@ public class UnitFSM : MonoBehaviour
         targetPC = null;
     }
 
+    // 손님의 음식 요청 UI/판정/서빙 플래그를 초기 상태로 되돌리는 함수
     public void ResetInteractionState()
     {
         isServed = false;
@@ -284,7 +310,8 @@ public class UnitFSM : MonoBehaviour
         }
     }
 
-    // Serving
+
+    #region  Serving
     void OnTriggerEnter2D(Collider2D collider)
     {
         Player player = collider.GetComponent<Player>();
@@ -292,13 +319,8 @@ public class UnitFSM : MonoBehaviour
 
         if (player.servingFood != null && requestedFood != null)
         {
-            receivedFood = player.servingFood;
-            isServed = true;
-
-            if (requestedFood.foodName == receivedFood.foodName)
+            if (TryServe(player.servingFood))
             {
-                SpawnMoney(receivedFood.foodPrice);
-                ResetTextBubble();
                 player.ClearFood();
             }
             else
@@ -307,4 +329,5 @@ public class UnitFSM : MonoBehaviour
             }
         }
     }
+    #endregion
 }
