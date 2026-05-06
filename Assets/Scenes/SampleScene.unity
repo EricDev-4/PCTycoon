@@ -42957,8 +42957,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563a102f181cfff4db282ad102afb505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectFoodSender
-  food: {fileID: 11400000, guid: df2dc387a32a23648a8a66e433c68181, type: 2}
-  kitchen: {fileID: 0}
 --- !u!1001 &1517212690
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60975,6 +60973,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3923451855681154960, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4670331418163924855, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16
@@ -61015,9 +61017,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6210516032665182462, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6833870196710137038, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7513464950578251421, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
       propertyPath: m_Name
       value: Kitchen
+      objectReference: {fileID: 0}
+    - target: {fileID: 8990061601779007775, guid: 5c0f43fad8182e347916d311915d91ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

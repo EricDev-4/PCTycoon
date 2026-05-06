@@ -18,16 +18,45 @@ public class Kitchen : MonoBehaviour
     [SerializeField] private RectTransform foodMenuUI;
     [SerializeField] private RectTransform content;
     private Slider slider;
-    private Button menuOpenBtn;
+    private RectTransform cookingButtonRoot;
+    private Button cookingButton;
+    private Image cookingIconImage;
     // private SelectFoodSender[] foodSenders;
     #endregion
 
+    private const float CookingButtonRiseDistance = 40f;
+    private const float CookingButtonRiseDuration = 0.4f;
+
     private float time = 0;
+    private Vector2 cookingButtonDefaultAnchoredPosition;
+
+    private void Awake()
+    {
+        slider = GetComponentInChildren<Slider>(true);
+        Transform cookingButtonTransform = transform.Find("Btn_Canvas/Cooking_Btn");
+        if (cookingButtonTransform != null)
+        {
+            cookingButton = cookingButtonTransform.GetComponent<Button>();
+            cookingButtonRoot = cookingButtonTransform.parent as RectTransform;
+        }
+
+        Transform cookingIconTransform = transform.Find("Btn_Canvas/Cooking_Btn/Cooking_Icon");
+        if (cookingIconTransform != null)
+        {
+            cookingIconImage = cookingIconTransform.GetComponent<Image>();
+        }
+
+        if (cookingButtonRoot != null)
+        {
+            cookingButtonDefaultAnchoredPosition = cookingButtonRoot.anchoredPosition;
+        }
+
+        ResetSliderUI();
+        ResetCookingButtonUI();
+    }
 
     private void Start()
     {
-        menuOpenBtn = GetComponentInChildren<Button>(true);
-        slider = GetComponentInChildren<Slider>(true);
         // foodSenders = content.GetComponentsInChildren<SelectFoodSender>(true);
 
         // HideMenuButton(true);
@@ -48,6 +77,59 @@ public class Kitchen : MonoBehaviour
         // }
     }
 
+    private void ResetSliderUI()
+    {
+        if (slider == null)
+        {
+            return;
+        }
+
+        slider.interactable = false;
+        slider.SetValueWithoutNotify(0f);
+        slider.gameObject.SetActive(false);
+    }
+
+    private void ShowCookingButton(FoodSO food)
+    {
+        if (cookingButtonRoot == null)
+        {
+            return;
+        }
+
+        if (cookingButton != null)
+        {
+            cookingButton.interactable = false;
+        }
+
+        if (cookingIconImage != null)
+        {
+            cookingIconImage.sprite = food.foodIcon;
+        }
+
+        cookingButtonRoot.DOKill();
+        cookingButtonRoot.gameObject.SetActive(true);
+        cookingButtonRoot.anchoredPosition = cookingButtonDefaultAnchoredPosition + Vector2.down * CookingButtonRiseDistance;
+        cookingButtonRoot.DOAnchorPos(cookingButtonDefaultAnchoredPosition, CookingButtonRiseDuration)
+            .SetEase(Ease.OutBack);
+    }
+
+    private void ResetCookingButtonUI()
+    {
+        if (cookingButtonRoot == null)
+        {
+            return;
+        }
+
+        cookingButtonRoot.DOKill();
+        cookingButtonRoot.anchoredPosition = cookingButtonDefaultAnchoredPosition;
+        cookingButtonRoot.gameObject.SetActive(false);
+
+        if (cookingButton != null)
+        {
+            cookingButton.interactable = false;
+        }
+    }
+
     private void Update()
     {
         if (player == null) return;
@@ -65,20 +147,27 @@ public class Kitchen : MonoBehaviour
             return null;
         }
 
+        if (!isCooking)
+        {
+            ShowCookingButton(food);
+        }
+
         isCooking = true;
         time += Time.deltaTime;
         float cookTime = food.cookTime;
         float value = time / cookTime;
 
+        slider.interactable = false;
         slider.gameObject.SetActive(true);
-        slider.value = value;
+        slider.SetValueWithoutNotify(value);
         if(value < 1) // 조리가 아직 다 안 끝났으면
             return null;
         
         // 조리가 끝나면 완료 처리
         time = 0;
         isCooking = false;
-        slider.gameObject.SetActive(false);
+        ResetSliderUI();
+        ResetCookingButtonUI();
         return food;
     }
 
