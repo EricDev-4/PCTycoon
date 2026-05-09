@@ -17,42 +17,23 @@ public class Kitchen : MonoBehaviour
     #region UI
     [SerializeField] private RectTransform foodMenuUI;
     [SerializeField] private RectTransform content;
+    [SerializeField] private Image cookingIconImage;
+    [SerializeField] private Transform cookingIconStartPos;
+    [SerializeField] private Transform cookingIconEndPos;
     private Slider slider;
-    private RectTransform cookingButtonRoot;
-    private Button cookingButton;
-    private Image cookingIconImage;
     // private SelectFoodSender[] foodSenders;
     #endregion
 
-    private const float CookingButtonRiseDistance = 40f;
-    private const float CookingButtonRiseDuration = 0.4f;
+    private const float CookingIconShowDuration = 0.45f;
+    private const float CookingIconHideDuration = 0.3f;
 
     private float time = 0;
-    private Vector2 cookingButtonDefaultAnchoredPosition;
 
     private void Awake()
     {
         slider = GetComponentInChildren<Slider>(true);
-        Transform cookingButtonTransform = transform.Find("Btn_Canvas/Cooking_Btn");
-        if (cookingButtonTransform != null)
-        {
-            cookingButton = cookingButtonTransform.GetComponent<Button>();
-            cookingButtonRoot = cookingButtonTransform.parent as RectTransform;
-        }
-
-        Transform cookingIconTransform = transform.Find("Btn_Canvas/Cooking_Btn/Cooking_Icon");
-        if (cookingIconTransform != null)
-        {
-            cookingIconImage = cookingIconTransform.GetComponent<Image>();
-        }
-
-        if (cookingButtonRoot != null)
-        {
-            cookingButtonDefaultAnchoredPosition = cookingButtonRoot.anchoredPosition;
-        }
-
+        ResetCookingIconImmediate();
         ResetSliderUI();
-        ResetCookingButtonUI();
     }
 
     private void Start()
@@ -89,45 +70,82 @@ public class Kitchen : MonoBehaviour
         slider.gameObject.SetActive(false);
     }
 
-    private void ShowCookingButton(FoodSO food)
+    private void ResetCookingIconImmediate()
     {
-        if (cookingButtonRoot == null)
+        if (cookingIconImage == null)
         {
             return;
         }
 
-        if (cookingButton != null)
+        RectTransform iconRect = cookingIconImage.rectTransform;
+        iconRect.DOKill();
+
+        if (cookingIconStartPos != null)
         {
-            cookingButton.interactable = false;
+            iconRect.localPosition = cookingIconStartPos.localPosition;
+        }
+        else if (cookingIconEndPos != null)
+        {
+            iconRect.localPosition = cookingIconEndPos.localPosition;
         }
 
-        if (cookingIconImage != null)
-        {
-            cookingIconImage.sprite = food.foodIcon;
-        }
-
-        cookingButtonRoot.DOKill();
-        cookingButtonRoot.gameObject.SetActive(true);
-        cookingButtonRoot.anchoredPosition = cookingButtonDefaultAnchoredPosition + Vector2.down * CookingButtonRiseDistance;
-        cookingButtonRoot.DOAnchorPos(cookingButtonDefaultAnchoredPosition, CookingButtonRiseDuration)
-            .SetEase(Ease.OutBack);
+        iconRect.localScale = Vector3.one;
+        cookingIconImage.sprite = null;
+        cookingIconImage.gameObject.SetActive(false);
     }
 
-    private void ResetCookingButtonUI()
+    private void ShowCookingIcon(FoodSO food)
     {
-        if (cookingButtonRoot == null)
+        if (cookingIconImage == null)
         {
             return;
         }
 
-        cookingButtonRoot.DOKill();
-        cookingButtonRoot.anchoredPosition = cookingButtonDefaultAnchoredPosition;
-        cookingButtonRoot.gameObject.SetActive(false);
+        RectTransform iconRect = cookingIconImage.rectTransform;
+        iconRect.DOKill();
 
-        if (cookingButton != null)
+        if (cookingIconStartPos != null)
         {
-            cookingButton.interactable = false;
+            iconRect.localPosition = cookingIconStartPos.localPosition;
         }
+
+        iconRect.localScale = Vector3.one * 0.8f;
+        cookingIconImage.sprite = food.foodIcon;
+        cookingIconImage.gameObject.SetActive(true);
+
+        Vector3 targetLocalPosition = cookingIconEndPos != null
+            ? cookingIconEndPos.localPosition
+            : iconRect.localPosition;
+
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconShowDuration).SetEase(Ease.OutBack));
+        sequence.Join(iconRect.DOScale(1.08f, CookingIconShowDuration * 0.6f).SetEase(Ease.OutBack));
+        sequence.Append(iconRect.DOScale(1f, CookingIconShowDuration * 0.25f).SetEase(Ease.OutQuad));
+    }
+
+    private void HideCookingIcon()
+    {
+        if (cookingIconImage == null)
+        {
+            return;
+        }
+
+        RectTransform iconRect = cookingIconImage.rectTransform;
+        iconRect.DOKill();
+
+        Vector3 targetLocalPosition = cookingIconStartPos != null
+            ? cookingIconStartPos.localPosition
+            : iconRect.localPosition;
+
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconHideDuration).SetEase(Ease.InBack));
+        sequence.Join(iconRect.DOScale(0.85f, CookingIconHideDuration).SetEase(Ease.InBack));
+        sequence.OnComplete(() =>
+        {
+            iconRect.localScale = Vector3.one;
+            cookingIconImage.sprite = null;
+            cookingIconImage.gameObject.SetActive(false);
+        });
     }
 
     private void Update()
@@ -149,7 +167,7 @@ public class Kitchen : MonoBehaviour
 
         if (!isCooking)
         {
-            ShowCookingButton(food);
+            ShowCookingIcon(food);
         }
 
         isCooking = true;
@@ -160,124 +178,16 @@ public class Kitchen : MonoBehaviour
         slider.interactable = false;
         slider.gameObject.SetActive(true);
         slider.SetValueWithoutNotify(value);
-        if(value < 1) // 조리가 아직 다 안 끝났으면
+
+        if (value < 1)
+        {
             return null;
-        
-        // 조리가 끝나면 완료 처리
+        }
+
         time = 0;
         isCooking = false;
         ResetSliderUI();
-        ResetCookingButtonUI();
+        HideCookingIcon();
         return food;
     }
-
-    // private void Cooking()
-    // {
-    //     time += Time.deltaTime;
-    //     float cookTime = selectedFood.cookTime;
-    //     float value = time / cookTime;
-
-    //     slider.gameObject.SetActive(true);
-    //     slider.value = value;
-
-    //     if (value < 1)
-    //     {
-    //         return;
-    //     }
-
-    //     time = 0;
-    //     isCooking = false;
-    //     player.InitFood(selectedFood);
-    //     selectedFood = null;
-    //     slider.gameObject.SetActive(false);
-    //     ShowMenuButton();
-    // }
-
-    // public void SetSelectedFood(FoodSO food)
-    // {
-    //     selectedFood = food;
-    //     HideFoodMenu();
-    //     HideMenuButton(true);
-    // }
-
-    // private void OnTriggerStay2D(Collider2D collider)
-    // {
-    //     Player currentPlayer = collider.GetComponent<Player>();
-    //     if (currentPlayer == null) return;
-
-    //     if (selectedFood != null)
-    //     {
-    //         isCooking = true;
-    //     }
-    // }
-
-    // private void OnTriggerEnter2D(Collider2D collider)
-    // {
-    //     player = collider.GetComponent<Player>();
-    //     if (player == null) return;
-
-    //     if (selectedFood == null)
-    //     {
-    //         ShowMenuButton();
-    //     }
-    // }
-
-    // private void OnTriggerExit2D(Collider2D collider)
-    // {
-    //     if (collider.GetComponent<Player>() == null) return;
-
-    //     player = null;
-    //     isCooking = false;
-    //     HideFoodMenu();
-    //     HideMenuButton();
-    // }
-
-    // private void OpenFoodMenu()
-    // {
-    //     if (foodMenuUI == null) return;
-
-    //     foodMenuUI.gameObject.SetActive(true);
-    // }
-
-    // private void HideFoodMenu()
-    // {
-    //     if (foodMenuUI == null) return;
-
-    //     foodMenuUI.gameObject.SetActive(false);
-    // }
-
-    // private void HideMenuButton(bool immediate = false)
-    // {
-    //     if (menuOpenBtn == null) return;
-
-    //     menuOpenBtn.transform.DOKill();
-
-    //     if (immediate)
-    //     {
-    //         menuOpenBtn.transform.localScale = Vector3.zero;
-    //         menuOpenBtn.gameObject.SetActive(false);
-    //         return;
-    //     }
-
-    //     menuOpenBtn.transform.DOScale(Vector3.zero, 0.3f)
-    //         .SetEase(Ease.InBack)
-    //         .OnComplete(() => menuOpenBtn.gameObject.SetActive(false));
-    // }
-
-    // private void ShowMenuButton()
-    // {
-    //     if (menuOpenBtn == null) return;
-
-    //     menuOpenBtn.gameObject.SetActive(true);
-    //     menuOpenBtn.transform.DOKill();
-    //     menuOpenBtn.transform.localScale = Vector3.zero;
-    //     menuOpenBtn.transform.DOScale(Vector3.one, 1f)
-    //         .SetEase(Ease.OutBack)
-    //         .OnComplete(() =>
-    //         {
-    //             menuOpenBtn.transform.DOScale(Vector3.one * 1.15f, 0.4f)
-    //                 .SetEase(Ease.InOutSine)
-    //                 .SetLoops(-1, LoopType.Yoyo);
-    //         });
-    // }
 }

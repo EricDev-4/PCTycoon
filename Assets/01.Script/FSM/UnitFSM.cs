@@ -197,6 +197,11 @@ public class UnitFSM : MonoBehaviour
             return false;
         }
 
+        if (targetPC != null)
+        {
+            targetPC.SetUsagePaused(false);
+        }
+
         isServed = true;
         SpawnMoney(receivedFood.foodPrice);
         ResetTextBubble();
@@ -229,6 +234,7 @@ public class UnitFSM : MonoBehaviour
     {
         if (targetPC == null) return;
 
+        targetPC.SetUsagePaused(false);
         targetPC.isUsing = false;
         targetPC.isTargeted = false;
         targetPC.isArrived = false;

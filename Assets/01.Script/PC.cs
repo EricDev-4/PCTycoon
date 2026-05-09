@@ -9,11 +9,12 @@ public class PC : MonoBehaviour
     public Slider slider;
     public float usingTime;
     // private float[] earningTime = { 3f, 30f, 20f };
-    public float earningTime = 20f;
+    public float earningTime = 60f;
     public Transform interactionPos;
 
     // PC가 사용중인가?
     public bool isUsing = false;
+    public bool isUsagePaused = false;
 
     // [SerializeField] private int level = 0;
     void Start()
@@ -24,19 +25,28 @@ public class PC : MonoBehaviour
 
     public bool UpdateUsingTimer()
     {
-        usingTime += Time.deltaTime;
+        if (!isUsagePaused)
+        {
+            usingTime += Time.deltaTime;
+        }
+
         // float value = usingTime / earningTime[level];
         float value = usingTime / earningTime;
 
 
-        slider.value = value;
+        slider.SetValueWithoutNotify(value);
 
-        if(value >= 1)
+        if(!isUsagePaused && value >= 1)
         {
             usingTime = 0;
             return true;
         }
         return false;
+    }
+
+    public void SetUsagePaused(bool paused)
+    {
+        isUsagePaused = paused;
     }
     
 }

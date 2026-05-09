@@ -136,7 +136,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6747788650894155259}
@@ -190,7 +190,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 30
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9184522457564138646, guid: ff9552fc17411e04d87d041fadc78d88, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -237,6 +237,7 @@ MonoBehaviour:
   earningTime: 20
   interactionPos: {fileID: 4485682267866387380}
   isUsing: 0
+  isUsagePaused: 0
 --- !u!61 &5119993018946962187
 BoxCollider2D:
   m_ObjectHideFlags: 0

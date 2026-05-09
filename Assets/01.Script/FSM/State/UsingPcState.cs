@@ -22,6 +22,7 @@ public class UsingPcState : IState
         {
             owner.targetPC.slider.gameObject.SetActive(true);
         }
+        owner.targetPC.SetUsagePaused(false);
         owner.targetPC.isUsing = true;
         owner.targetPC.isTargeted = false;
 
