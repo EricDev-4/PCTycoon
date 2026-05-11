@@ -99,6 +99,10 @@ public class UsingPcState : IState
     public void Exit(UnitFSM owner)
     {
         Debug.Log("Exit");
+        if (owner.targetPC != null)
+        {
+            owner.targetPC.AddSessionExp();
+        }
         owner.SpawnMoney(0);
         owner.ResetInteractionState();
         owner.ReleasePC();

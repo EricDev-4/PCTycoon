@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UnitTapController : MonoBehaviour
 {
@@ -36,12 +37,17 @@ public class UnitTapController : MonoBehaviour
 
     private void Update()
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (TryServeFood()) return;
             if (TryGetMoney()) return;
-
-            TryEnqueueUnitOrder();
+            if (TryEnqueueUnitOrder()) return;
+            if (TryOpenPcUpgrade()) return;
         }
 
         if (Input.GetMouseButton(0))
@@ -50,11 +56,11 @@ public class UnitTapController : MonoBehaviour
         }
     }
 
-    private void TryEnqueueUnitOrder()
+    private bool TryEnqueueUnitOrder()
     {
-        if (!TryGetComponentAtPointer(out UnitFSM unit)) return;
-        if (unit == null || unit.requestedFood == null) return;
-        if (queuedUnits.Contains(unit)) return;
+        if (!TryGetComponentAtPointer(out UnitFSM unit)) return false;
+        if (unit == null || unit.requestedFood == null) return false;
+        if (queuedUnits.Contains(unit)) return false;
 
         pendingOrders.Enqueue(new OrderRequest(unit, unit.requestedFood));
         queuedUnits.Add(unit);
@@ -70,6 +76,8 @@ public class UnitTapController : MonoBehaviour
         {
             unit.interactiveColl.enabled = false;
         }
+
+        return true;
     }
 
     private void TryCookAtKitchen()
@@ -83,6 +91,7 @@ public class UnitTapController : MonoBehaviour
 
         SpawnCookedFood(cookedFood, servingSlot, order);
         pendingOrders.Dequeue();
+        orderListUI?.RemoveOrder(order.Unit);
     }
 
     private bool TryGetMoney()
@@ -91,6 +100,15 @@ public class UnitTapController : MonoBehaviour
         if (money == null) return false;
 
         money.GetMoney();
+        return true;
+    }
+
+    private bool TryOpenPcUpgrade()
+    {
+        if (!TryGetComponentAtPointer(out PC pc)) return false;
+        if (pc == null) return false;
+
+        pc.OpenUpgradeShop();
         return true;
     }
 

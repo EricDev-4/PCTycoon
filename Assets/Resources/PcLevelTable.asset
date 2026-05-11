@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6d650f5cd7411bb49b52c76e5e530c, type: 3}
+  m_Name: PcLevelTable
+  m_EditorClassIdentifier: Assembly-CSharp::PcLevelTableSO
+  requiredTotalExpByLevel:
+  - 0
+  - 100
+  - 130
+  - 170
+  - 220
+  - 290
+  - 380
+  - 500
+  - 650
+  - 850
+  - 1100
+  - 1400
+  - 1800
+  - 2300
+  - 3000
+  - 3900
+  - 5100
+  - 6600
+  - 8600
+  - 11000
+  - 14000
+  - 18000
+  - 23000
+  - 30000
+  - 39000
+  - 51000
+  - 66000
+  - 86000
+  - 110000
+  - 140000
