@@ -34,19 +34,26 @@ public class GetUpgradeSO : MonoBehaviour
             Debug.LogWarning($"No upgrade data is assigned for {name}.");
             return;
         }
-
-        Pc_Upgrade pcUpgrade = GetComponentInParent<Pc_Upgrade>(true);
-        if (pcUpgrade == null)
+        if(GameManager.instance.money >= UpgradeDataSO.cost)
         {
-            pcUpgrade = Pc_Upgrade.FindInstance();
-        }
+            Pc_Upgrade pcUpgrade = GetComponentInParent<Pc_Upgrade>(true);
+            if (pcUpgrade == null)
+            {
+                pcUpgrade = Pc_Upgrade.FindInstance();
+            }
 
-        if (pcUpgrade == null)
+            if (pcUpgrade == null)
+            {
+                Debug.LogWarning("Pc_Upgrade not found. Cannot apply upgrade.");
+                return;
+            }
+
+            pcUpgrade.ApplyUpgrade(UpgradeDataSO);
+        }
+        else
         {
-            Debug.LogWarning("Pc_Upgrade not found. Cannot apply upgrade.");
-            return;
+            // 돈이 부족합니다!
+            Debug.Log("츄르가 부족합니다!");
         }
-
-        pcUpgrade.ApplyUpgrade(UpgradeDataSO);
     }
 }
