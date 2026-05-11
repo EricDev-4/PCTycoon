@@ -15,6 +15,6 @@ MonoBehaviour:
   type: 0
   level: 1
   cost: 1000
-  ExpBonus: 0
+  ExpBonus: 100
   incomeBonus: 5
   satisfactionBonus: 100

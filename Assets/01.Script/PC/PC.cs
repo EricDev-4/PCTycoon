@@ -163,7 +163,7 @@ public class PC : MonoBehaviour
             return;
         }
 
-        levelText.text = $"Lv: {ResolveLevel(Mathf.Max(0, currentExperience))}";
+        levelText.text = $"Lv: {GetCurrentLevel()}";
     }
 
     public void OpenUpgradeShop()
@@ -181,7 +181,7 @@ public class PC : MonoBehaviour
     public float GetLevelProgress()
     {
         int totalExp = Mathf.Max(0, currentExperience);
-        int currentLevel = ResolveLevel(totalExp);
+        int currentLevel = GetCurrentLevel();
         int maxLevel = GetMaxLevel();
 
         if (currentLevel >= maxLevel)
@@ -197,5 +197,28 @@ public class PC : MonoBehaviour
         }
 
         return Mathf.InverseLerp(minExp, maxExp, totalExp);
+    }
+
+    public int GetCurrentLevel()
+    {
+        return ResolveLevel(Mathf.Max(0, currentExperience));
+    }
+
+    public int GetCurrentExperienceValue()
+    {
+        return Mathf.Max(0, currentExperience);
+    }
+
+    public int GetDisplayMaxExperience()
+    {
+        int currentLevel = GetCurrentLevel();
+        int maxLevel = GetMaxLevel();
+
+        if (currentLevel >= maxLevel)
+        {
+            return Mathf.Max(GetCurrentExperienceValue(), GetRequiredExp(maxLevel));
+        }
+
+        return GetRequiredExp(currentLevel + 1);
     }
 }

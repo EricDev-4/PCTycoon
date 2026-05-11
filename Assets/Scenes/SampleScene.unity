@@ -1471,7 +1471,7 @@ GameObject:
   - component: {fileID: 48503154}
   - component: {fileID: 48503156}
   m_Layer: 7
-  m_Name: RAM
+  m_Name: SSD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1548,7 +1548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728610f9aa887b549a475d77c082373b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GetUpgradeSO
-  UpgradeDataSO: {fileID: 0}
+  UpgradeDataSO: {fileID: 11400000, guid: 9ff7c33fe38440d4baff8022814ee4c3, type: 2}
 --- !u!4 &51766425 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3486708453523896753, guid: c55532b5ed6f39e4fa5e974616a798ab, type: 3}
@@ -2085,6 +2085,7 @@ Transform:
   - {fileID: 1998761211}
   - {fileID: 1941262166}
   - {fileID: 1889053693}
+  - {fileID: 2038022503}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &63142710 stripped
@@ -8876,6 +8877,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pc_Upgrade
   selectedPC: {fileID: 0}
   upgradeShopPanel: {fileID: 0}
+  currentExpBar: {fileID: 267381310}
+  currentLevelText: {fileID: 1784694877}
+  currentExpText: {fileID: 0}
 --- !u!1 &288745861
 GameObject:
   m_ObjectHideFlags: 0
@@ -16359,7 +16363,7 @@ MonoBehaviour:
   unitList: []
   foodMenu: {fileID: 11400000, guid: 43179c26d685b8149aeb410f44cf5d46, type: 2}
   _money: 0
-  door: {fileID: 0}
+  door: {fileID: 2038022503}
   spawnInterval: 1.5
 --- !u!4 &524816184
 Transform:
@@ -23724,7 +23728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728610f9aa887b549a475d77c082373b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GetUpgradeSO
-  UpgradeDataSO: {fileID: 0}
+  UpgradeDataSO: {fileID: 11400000, guid: 2ad98822229902846bea8250daacc5bc, type: 2}
 --- !u!1001 &727610180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45751,7 +45755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728610f9aa887b549a475d77c082373b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GetUpgradeSO
-  UpgradeDataSO: {fileID: 0}
+  UpgradeDataSO: {fileID: 11400000, guid: 7bda93f3169fc054d9b430a27a908d55, type: 2}
 --- !u!1001 &1559561014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54596,6 +54600,63 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1001 &1801762751
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 61802254}
+    m_Modifications:
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807257676887144298, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+      propertyPath: m_Name
+      value: Door
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
 --- !u!1 &1801839628
 GameObject:
   m_ObjectHideFlags: 0
@@ -60969,6 +61030,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3486708453523896753, guid: c55532b5ed6f39e4fa5e974616a798ab, type: 3}
   m_PrefabInstance: {fileID: 337825565}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2038022503 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 189551445493032963, guid: 97f8ca59b1a48304ba17fe2576bda8da, type: 3}
+  m_PrefabInstance: {fileID: 1801762751}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2040282390 stripped
 Transform:
