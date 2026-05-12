@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "PC.slnx"
+    "dotnet.defaultSolution": "PCTycoon.slnx"
 }

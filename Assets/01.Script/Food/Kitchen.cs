@@ -5,12 +5,12 @@ using DG.Tweening;
 public class Kitchen : MonoBehaviour
 {
     #region Component
-    private Player player;
     [SerializeField] private BoxCollider2D coll;
     #endregion
 
     #region memberVariable
-    [SerializeField] private FoodSO selectedFood;
+    [SerializeField] private FoodSO currentOrderFood;
+    private UnitFSM currentOrderUnit;
     [SerializeField] private bool isCooking = false;
     #endregion
 
@@ -28,6 +28,8 @@ public class Kitchen : MonoBehaviour
     private const float CookingIconHideDuration = 0.3f;
 
     private float time = 0;
+
+    public bool IsIdle => currentOrderFood == null || currentOrderUnit == null;
 
     private void Awake()
     {
@@ -148,46 +150,76 @@ public class Kitchen : MonoBehaviour
         });
     }
 
-    private void Update()
+    public bool TryAssignOrder(FoodSO food, UnitFSM unit)
     {
-        if (player == null) return;
+        if (food == null || unit == null || !IsIdle)
+        {
+            return false;
+        }
 
-        // if (isCooking)
-        // {
-        //     Cooking();
-        // }
+        currentOrderFood = food;
+        currentOrderUnit = unit;
+        time = 0f;
+        isCooking = false;
+        ResetSliderUI();
+        ResetCookingIconImmediate();
+        return true;
     }
 
-    public FoodSO Cooking(FoodSO food)
+    public bool TryCookAssignedOrder(out FoodSO cookedFood, out UnitFSM targetUnit)
     {
-        if (food == null || slider == null)
+        cookedFood = null;
+        targetUnit = null;
+
+        if (currentOrderFood == null || currentOrderUnit == null)
         {
-            return null;
+            ClearCurrentOrder(false);
+            return false;
         }
+
+        float cookTime = Mathf.Max(0.01f, currentOrderFood.cookTime);
 
         if (!isCooking)
         {
-            ShowCookingIcon(food);
+            ShowCookingIcon(currentOrderFood);
         }
 
         isCooking = true;
         time += Time.deltaTime;
-        float cookTime = food.cookTime;
         float value = time / cookTime;
 
-        slider.interactable = false;
-        slider.gameObject.SetActive(true);
-        slider.SetValueWithoutNotify(value);
-
-        if (value < 1)
+        if (slider != null)
         {
-            return null;
+            slider.interactable = false;
+            slider.gameObject.SetActive(true);
+            slider.SetValueWithoutNotify(value);
         }
 
-        time = 0;
+        if (value < 1f)
+        {
+            return false;
+        }
+
+        cookedFood = currentOrderFood;
+        targetUnit = currentOrderUnit;
+        ClearCurrentOrder(true);
+        return true;
+    }
+
+    private void ClearCurrentOrder(bool animateHideIcon)
+    {
+        currentOrderFood = null;
+        currentOrderUnit = null;
+        time = 0f;
         isCooking = false;
         ResetSliderUI();
-        HideCookingIcon();
-        return food;
+
+        if (animateHideIcon)
+        {
+            HideCookingIcon();
+            return;
+        }
+
+        ResetCookingIconImmediate();
     }
 }

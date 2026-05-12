@@ -83,15 +83,14 @@ public class UnitTapController : MonoBehaviour
     private void TryCookAtKitchen()
     {
         if (!TryGetComponentAtPointer(out Kitchen kitchen)) return;
-        if (!TryGetCurrentOrder(out OrderRequest order)) return;
+        if (kitchen == null) return;
+
+        if (kitchen.IsIdle && !TryAssignNextOrderToKitchen(kitchen)) return;
         if (!TryGetEmptyServingLineSlot(out Transform servingSlot)) return;
 
-        FoodSO cookedFood = kitchen.Cooking(order.Food);
-        if (cookedFood == null) return;
+        if (!kitchen.TryCookAssignedOrder(out FoodSO cookedFood, out UnitFSM targetUnit)) return;
 
-        SpawnCookedFood(cookedFood, servingSlot, order);
-        pendingOrders.Dequeue();
-        orderListUI?.RemoveOrder(order.Unit);
+        SpawnCookedFood(cookedFood, servingSlot, targetUnit);
     }
 
     private bool TryGetMoney()
@@ -144,9 +143,12 @@ public class UnitTapController : MonoBehaviour
         orderListUI?.RemoveOrder(unit);
     }
 
-    private bool TryGetCurrentOrder(out OrderRequest order)
+    private bool TryAssignNextOrderToKitchen(Kitchen kitchen)
     {
-        order = null;
+        if (kitchen == null || !kitchen.IsIdle)
+        {
+            return false;
+        }
 
         while (pendingOrders.Count > 0)
         {
@@ -163,7 +165,13 @@ public class UnitTapController : MonoBehaviour
                 continue;
             }
 
-            order = nextOrder;
+            if (!kitchen.TryAssignOrder(nextOrder.Food, nextOrder.Unit))
+            {
+                return false;
+            }
+
+            pendingOrders.Dequeue();
+            orderListUI?.RemoveOrder(nextOrder.Unit);
             return true;
         }
 
@@ -192,7 +200,7 @@ public class UnitTapController : MonoBehaviour
         return false;
     }
 
-    private void SpawnCookedFood(FoodSO cookedFood, Transform servingSlot, OrderRequest order)
+    private void SpawnCookedFood(FoodSO cookedFood, Transform servingSlot, UnitFSM targetUnit)
     {
         GameObject spawnedFood = Instantiate(cookedFood.prefab, servingSlot);
         Vector3 parentScale = servingSlot.lossyScale;
@@ -209,7 +217,7 @@ public class UnitTapController : MonoBehaviour
             food = spawnedFood.AddComponent<Food>();
         }
 
-        food.Init(cookedFood, order.Unit);
+        food.Init(cookedFood, targetUnit);
     }
 
     // T is the component type to search for under the current pointer.
