@@ -34,23 +34,43 @@ public class GetUpgradeSO : MonoBehaviour
             Debug.LogWarning($"No upgrade data is assigned for {name}.");
             return;
         }
-        if(GameManager.instance.money >= upgradeDataSO.cost)
+
+        Pc_Upgrade pcUpgrade = GetComponentInParent<Pc_Upgrade>(true);
+        if (pcUpgrade == null)
         {
-            Pc_Upgrade pcUpgrade = GetComponentInParent<Pc_Upgrade>(true);
-            if (pcUpgrade == null)
-            {
-                pcUpgrade = Pc_Upgrade.FindInstance();
-            }
+            pcUpgrade = Pc_Upgrade.FindInstance();
+        }
 
-            if (pcUpgrade == null)
-            {
-                Debug.LogWarning("Pc_Upgrade not found. Cannot apply upgrade.");
-                return;
-            }
+        if (pcUpgrade == null)
+        {
+            Debug.LogWarning("Pc_Upgrade not found. Cannot apply upgrade.");
+            return;
+        }
 
+        if (pcUpgrade.SelectedPC == null)
+        {
+            Debug.LogWarning("No PC is selected. Cannot apply upgrade.");
+            return;
+        }
+
+        int cost = pcUpgrade.SelectedPC.GetUpgradeCost(upgradeDataSO);
+        if (cost < 0)
+        {
+            Debug.Log($"{upgradeDataSO.type} upgrade is already at max level.");
+            return;
+        }
+
+        if (GameManager.instance == null)
+        {
+            Debug.LogWarning("GameManager instance is missing. Cannot apply upgrade.");
+            return;
+        }
+
+        if (GameManager.instance.money >= cost)
+        {
             if (pcUpgrade.ApplyUpgrade(upgradeDataSO))
             {
-                GameManager.instance.money -= upgradeDataSO.cost;
+                GameManager.instance.money -= cost;
             }
         }
         else

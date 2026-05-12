@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e612bb7e6d0cbfb40a823b75c33594e9, type: 3}
   m_Name: MoneySO
   m_EditorClassIdentifier: Assembly-CSharp::MoneySO
-  price: 10
+  Defaultprice: 1000
   prefab: {fileID: 1362361682232887317, guid: fe1e7d1c3676c6d43805594f4a58ebd7, type: 3}
   sprite: {fileID: 6973458404229706897, guid: 0a56d85bdc0b81a4ead62fbe20ddeded, type: 3}

@@ -289,7 +289,8 @@ public class UnitFSM : MonoBehaviour
     {
         if (moneySO == null || moneySO.prefab == null) return;
 
-        int spawnPrice = price != 0 ? price : moneySO.price;
+        // price 가 0이 아니면 price 0이면 기본값
+        int spawnPrice = price != 0 ? price : moneySO.Defaultprice;
         if (price == 0 && targetPC != null)
         {
             spawnPrice = targetPC.GetUsageFee(spawnPrice);

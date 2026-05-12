@@ -13,8 +13,29 @@ MonoBehaviour:
   m_Name: SSD
   m_EditorClassIdentifier: Assembly-CSharp::PCUpgradeDataSO
   type: 2
-  level: 1
-  cost: 300
-  ExpBonus: 30
-  incomeBonus: 5
-  satisfactionBonus: 100
+  tiers:
+  - cost: 0
+    ExpBonus: 0
+    incomeBonus: 100
+    satisfactionPointGain: 0
+    decresingUsingTimePercent: 100
+  - cost: 300
+    ExpBonus: 30
+    incomeBonus: 100
+    satisfactionPointGain: 0
+    decresingUsingTimePercent: 106
+  - cost: 500
+    ExpBonus: 50
+    incomeBonus: 100
+    satisfactionPointGain: 0
+    decresingUsingTimePercent: 113
+  - cost: 800
+    ExpBonus: 80
+    incomeBonus: 100
+    satisfactionPointGain: 0
+    decresingUsingTimePercent: 121
+  - cost: 1200
+    ExpBonus: 130
+    incomeBonus: 100
+    satisfactionPointGain: 0
+    decresingUsingTimePercent: 200

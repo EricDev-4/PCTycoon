@@ -1,19 +1,29 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class PC : MonoBehaviour
 {
     private const string DefaultLevelTableResourcePath = "PcLevelTable";
+    private const string GpuUpgradeResourcePath = "03.SO/GPU";
+    private const string CpuUpgradeResourcePath = "03.SO/CPU";
+    private const string SsdUpgradeResourcePath = "03.SO/SSD";
     private const float MinimumUsingDuration = 0.1f;
+    private const float DefaultPercentBonus = 100f;
 
     private static PcLevelTableSO cachedDefaultLevelTable;
     private static bool hasLoggedMissingLevelTable;
+    private static PCUpgradeDataSO cachedGpuUpgradeData;
+    private static PCUpgradeDataSO cachedCpuUpgradeData;
+    private static PCUpgradeDataSO cachedSsdUpgradeData;
+    private static bool hasLoggedMissingGpuUpgradeData;
+    private static bool hasLoggedMissingCpuUpgradeData;
+    private static bool hasLoggedMissingSsdUpgradeData;
 
     public bool isTargeted = false;
     public bool isArrived = false;
     public Slider slider;
-    [SerializeField] TMP_Text levelText;
+    [SerializeField] private TMP_Text levelText;
     [SerializeField] private PcLevelTableSO levelTable;
     public float usingTime;
     public float earningTime = 20f;
@@ -96,15 +106,45 @@ public class PC : MonoBehaviour
             return false;
         }
 
-        IncreaseUpgradeLevel(upgradeData.type);
+        int currentUpgradeLevel = GetUpgradeLevel(upgradeData.type);
+        int nextUpgradeLevel = currentUpgradeLevel + 1;
+        if (!upgradeData.TryGetTier(nextUpgradeLevel, out _))
+        {
+            Debug.LogWarning($"{name} {upgradeData.type} upgrade is already at max level.");
+            return false;
+        }
 
-        int expBonus = Mathf.RoundToInt(upgradeData.ExpBonus);
+        SetUpgradeLevel(upgradeData.type, nextUpgradeLevel);
+
+        int expBonus = Mathf.RoundToInt(upgradeData.GetExpBonus(nextUpgradeLevel));
         if (expBonus > 0)
         {
             AddExp(expBonus);
         }
 
         return true;
+    }
+
+    public int GetUpgradeCost(PCUpgradeDataSO upgradeData)
+    {
+        if (upgradeData == null)
+        {
+            return -1;
+        }
+
+        int nextUpgradeLevel = GetUpgradeLevel(upgradeData.type) + 1;
+        return upgradeData.GetUpgradeCost(nextUpgradeLevel);
+    }
+
+    public int GetUpgradeLevel(PCUpgradeDataSO.UpgradeType upgradeType)
+    {
+        return upgradeType switch
+        {
+            PCUpgradeDataSO.UpgradeType.GPU => Mathf.Max(1, gpuLevel),
+            PCUpgradeDataSO.UpgradeType.CPU => Mathf.Max(1, cpuLevel),
+            PCUpgradeDataSO.UpgradeType.SSD => Mathf.Max(1, ssdLevel),
+            _ => 1
+        };
     }
 
     public void AddExp(int amount)
@@ -248,34 +288,81 @@ public class PC : MonoBehaviour
 
     public float GetEffectiveUsingTime()
     {
-        float reductionRate = PCUpgradeDataSO.CalculateSsdUsingTimeReductionRate(ssdLevel);
-        return Mathf.Max(MinimumUsingDuration, earningTime * (1f - reductionRate));
+        PCUpgradeDataSO ssdUpgradeData = GetUpgradeData(PCUpgradeDataSO.UpgradeType.SSD);
+        float effectivePercent = ssdUpgradeData != null
+            ? ssdUpgradeData.GetUsingTimePercent(ssdLevel)
+            : DefaultPercentBonus;
+
+        return Mathf.Max(MinimumUsingDuration, earningTime * (DefaultPercentBonus / effectivePercent));
     }
 
     public int GetUsageFee(int basePrice)
     {
-        float bonusRate = PCUpgradeDataSO.CalculateGpuIncomeBonusRate(gpuLevel);
-        return Mathf.Max(0, Mathf.RoundToInt(basePrice * (1f + bonusRate)));
+        PCUpgradeDataSO gpuUpgradeData = GetUpgradeData(PCUpgradeDataSO.UpgradeType.GPU);
+        float bonusPercent = gpuUpgradeData != null
+            ? gpuUpgradeData.GetIncomeBonusPercent(gpuLevel)
+            : DefaultPercentBonus;
+
+        return Mathf.Max(0, Mathf.RoundToInt(basePrice * (bonusPercent / DefaultPercentBonus)));
     }
 
-    public float GetSatisfactionGain()
+    public int GetSatisfactionPointGain()
     {
-        return PCUpgradeDataSO.CalculateCpuSatisfactionBonus(cpuLevel);
+        PCUpgradeDataSO cpuUpgradeData = GetUpgradeData(PCUpgradeDataSO.UpgradeType.CPU);
+        return cpuUpgradeData != null
+            ? cpuUpgradeData.GetSatisfactionPointGain(cpuLevel)
+            : 0;
     }
 
-    private void IncreaseUpgradeLevel(PCUpgradeDataSO.UpgradeType upgradeType)
+    private void SetUpgradeLevel(PCUpgradeDataSO.UpgradeType upgradeType, int level)
     {
         switch (upgradeType)
         {
             case PCUpgradeDataSO.UpgradeType.GPU:
-                gpuLevel = Mathf.Max(1, gpuLevel + 1);
+                gpuLevel = Mathf.Max(1, level);
                 break;
             case PCUpgradeDataSO.UpgradeType.CPU:
-                cpuLevel = Mathf.Max(1, cpuLevel + 1);
+                cpuLevel = Mathf.Max(1, level);
                 break;
             case PCUpgradeDataSO.UpgradeType.SSD:
-                ssdLevel = Mathf.Max(1, ssdLevel + 1);
+                ssdLevel = Mathf.Max(1, level);
                 break;
         }
+    }
+
+    private PCUpgradeDataSO GetUpgradeData(PCUpgradeDataSO.UpgradeType upgradeType)
+    {
+        switch (upgradeType)
+        {
+            case PCUpgradeDataSO.UpgradeType.GPU:
+                return LoadUpgradeData(ref cachedGpuUpgradeData, ref hasLoggedMissingGpuUpgradeData, GpuUpgradeResourcePath, upgradeType);
+            case PCUpgradeDataSO.UpgradeType.CPU:
+                return LoadUpgradeData(ref cachedCpuUpgradeData, ref hasLoggedMissingCpuUpgradeData, CpuUpgradeResourcePath, upgradeType);
+            case PCUpgradeDataSO.UpgradeType.SSD:
+                return LoadUpgradeData(ref cachedSsdUpgradeData, ref hasLoggedMissingSsdUpgradeData, SsdUpgradeResourcePath, upgradeType);
+            default:
+                return null;
+        }
+    }
+
+    private static PCUpgradeDataSO LoadUpgradeData(
+        ref PCUpgradeDataSO cachedUpgradeData,
+        ref bool hasLoggedMissingUpgradeData,
+        string resourcePath,
+        PCUpgradeDataSO.UpgradeType upgradeType)
+    {
+        if (cachedUpgradeData != null)
+        {
+            return cachedUpgradeData;
+        }
+
+        cachedUpgradeData = Resources.Load<PCUpgradeDataSO>(resourcePath);
+        if (cachedUpgradeData == null && !hasLoggedMissingUpgradeData)
+        {
+            hasLoggedMissingUpgradeData = true;
+            Debug.LogError($"PCUpgradeDataSO for {upgradeType} not found at Resources/{resourcePath}.");
+        }
+
+        return cachedUpgradeData;
     }
 }

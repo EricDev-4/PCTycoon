@@ -103,10 +103,11 @@ public class UsingPcState : IState
         {
             if (GameManager.instance != null)
             {
-                GameManager.instance.satisfaction += owner.targetPC.GetSatisfactionGain();
+                GameManager.instance.satisfactionPoint += owner.targetPC.GetSatisfactionPointGain();
             }
             owner.targetPC.AddSessionExp();
         }
+        // price 가 0이 아니면 price 0이면 기본값
         owner.SpawnMoney(0);
         owner.ResetInteractionState();
         owner.ReleasePC();

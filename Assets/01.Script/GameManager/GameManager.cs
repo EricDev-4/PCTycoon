@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public List<PC> pcList = new List<PC>();
     public List<UnitFSM> unitList = new List<UnitFSM>();
-    
+
     public FoodMenuSO foodMenu;
     public int _money;
     public int money
@@ -21,13 +22,13 @@ public class GameManager : MonoBehaviour
             OnMoneyChanged?.Invoke(_money);
         }
     }
-    public float satisfaction;
+
+    [FormerlySerializedAs("satisfaction")]
+    public int satisfactionPoint;
     [SerializeField] private TMP_Text satisfactionText;
-    private float lastSatisfaction = float.MinValue;
+    private int lastSatisfactionPoint = int.MinValue;
 
-
-
-    [SerializeField] Transform door;
+    [SerializeField] private Transform door;
     [SerializeField] private float spawnInterval = 1f;
     private float spawnCooldown;
 
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
             pcList.Add(pc);
         }
     }
+
     private void FindUnit()
     {
         UnitFSM[] found = FindObjectsByType<UnitFSM>(FindObjectsSortMode.None);
@@ -60,38 +62,24 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void Start()
     {
         FindPC();
         FindUnit();
         RefreshSatisfactionText();
-
-        // for (int i =0; i < unitList.Count; i++)
-        // {
-        //     if (unitList[i] == null) continue;
-        //     if (i >= pcList.Count) break;
-
-        //     PC pc = pcList[i];
-        //     if (pc == null) continue;
-
-        //     pc.isTargeted = true;
-        //     pc.isArrived = false;
-        //     unitList[i].Setup(pc);
-        // }
     }
 
-    void Update()
+    private void Update()
     {
         RefreshSatisfactionText();
 
         if (ObjectPool.Instance == null) return;
         if (door == null) return;
 
-        // 비어있는 pc가 있으면 반복
         spawnCooldown -= Time.deltaTime;
         if (spawnCooldown > 0f) return;
 
-        // 비어있는 pc가 있으면 스폰 (스폰 텀 적용)
         PC pc = GetAvailablePC();
         if (pc == null) return;
 
@@ -106,38 +94,38 @@ public class GameManager : MonoBehaviour
             PC candidate = pcList[i];
             if (candidate == null) continue;
 
-                // Pc 후보가 사용중이거나 타겟이 아니면 return
             if (!candidate.isUsing && !candidate.isTargeted)
             {
                 return candidate;
             }
         }
+
         return null;
     }
 
     private void TrySpawnAndAssignPc(string poolTag, Vector3 spawnPosition, PC pc)
     {
-        GameObject spawned = ObjectPool.Instance.SpawnFormPool(poolTag, spawnPosition); // poolDictionary 오브젝트 반환
+        GameObject spawned = ObjectPool.Instance.SpawnFormPool(poolTag, spawnPosition);
         if (spawned == null) return;
 
-        UnitFSM unit = spawned.GetComponentInChildren<UnitFSM>(); // 스폰된 오브젝트에서 UnitFSM을 찾음
+        UnitFSM unit = spawned.GetComponentInChildren<UnitFSM>();
         if (unit == null)
         {
             Debug.LogWarning($"GameManager: Spawned '{poolTag}' doesn't have UnitFSM. Despawning.");
             ObjectPool.Instance.Despawn(spawned);
             return;
         }
-        unit.AssignToPC(pc); // 해당 유닛이 PC를 목표로 행동하게 AssignToPC
-        return;
+
+        unit.AssignToPC(pc);
     }
 
     private void RefreshSatisfactionText()
     {
-        if (Mathf.Approximately(lastSatisfaction, satisfaction)) return;
+        if (lastSatisfactionPoint == satisfactionPoint) return;
 
-        lastSatisfaction = satisfaction;
+        lastSatisfactionPoint = satisfactionPoint;
 
         if (satisfactionText == null) return;
-        satisfactionText.text = $"만족도 : {satisfaction:0.##}";
+        satisfactionText.text = $"\uB9CC\uC871\uB3C4 : {satisfactionPoint}";
     }
 }
