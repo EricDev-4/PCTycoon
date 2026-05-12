@@ -290,6 +290,10 @@ public class UnitFSM : MonoBehaviour
         if (moneySO == null || moneySO.prefab == null) return;
 
         int spawnPrice = price != 0 ? price : moneySO.price;
+        if (price == 0 && targetPC != null)
+        {
+            spawnPrice = targetPC.GetUsageFee(spawnPrice);
+        }
 
         float randomX = Random.Range(2f, 6f) * (Random.value > 0.5f ? 1f : -1f);
         float randomY = Random.Range(-4f, -4.5f);

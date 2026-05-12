@@ -97,29 +97,27 @@ public class Pc_Upgrade : MonoBehaviour
         upgradeShopPanel.SetActive(false);
     }
 
-    public void ApplyUpgrade(PCUpgradeDataSO upgradeData)
+    public bool ApplyUpgrade(PCUpgradeDataSO upgradeData)
     {
         if (selectedPC == null)
         {
             Debug.LogWarning("No PC is selected. Open the upgrade shop from a PC before applying an upgrade.");
-            return;
+            return false;
         }
 
         if (upgradeData == null)
         {
             Debug.LogWarning("Upgrade data is missing. Cannot apply upgrade.");
-            return;
+            return false;
         }
 
-        int expBonus = Mathf.RoundToInt(upgradeData.ExpBonus);
-        if (expBonus <= 0)
+        if (!selectedPC.ApplyUpgrade(upgradeData))
         {
-            Debug.LogWarning("Selected upgrade has no EXP bonus to apply.");
-            return;
+            return false;
         }
 
-        selectedPC.AddExp(expBonus);
         RefreshSelectedPcUI();
+        return true;
     }
 
     private void RefreshSelectedPcUI()

@@ -27,7 +27,7 @@ public class UsingPcState : IState
         owner.targetPC.isTargeted = false;
 
         int minTime = 3;
-        int maxTime = (int)owner.targetPC.earningTime - 5;
+        int maxTime = Mathf.FloorToInt(owner.targetPC.GetEffectiveUsingTime()) - 5;
         requestTime = maxTime <= minTime ? minTime : Random.Range(minTime, maxTime);
     }
 
@@ -101,6 +101,10 @@ public class UsingPcState : IState
         Debug.Log("Exit");
         if (owner.targetPC != null)
         {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.satisfaction += owner.targetPC.GetSatisfactionGain();
+            }
             owner.targetPC.AddSessionExp();
         }
         owner.SpawnMoney(0);

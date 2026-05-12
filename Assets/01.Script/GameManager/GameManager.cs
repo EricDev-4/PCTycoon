@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -20,7 +21,9 @@ public class GameManager : MonoBehaviour
             OnMoneyChanged?.Invoke(_money);
         }
     }
-
+    public float satisfaction;
+    [SerializeField] private TMP_Text satisfactionText;
+    private float lastSatisfaction = float.MinValue;
 
 
 
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour
     {
         FindPC();
         FindUnit();
+        RefreshSatisfactionText();
 
         // for (int i =0; i < unitList.Count; i++)
         // {
@@ -78,6 +82,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        RefreshSatisfactionText();
+
         if (ObjectPool.Instance == null) return;
         if (door == null) return;
 
@@ -123,5 +129,15 @@ public class GameManager : MonoBehaviour
         }
         unit.AssignToPC(pc); // 해당 유닛이 PC를 목표로 행동하게 AssignToPC
         return;
+    }
+
+    private void RefreshSatisfactionText()
+    {
+        if (Mathf.Approximately(lastSatisfaction, satisfaction)) return;
+
+        lastSatisfaction = satisfaction;
+
+        if (satisfactionText == null) return;
+        satisfactionText.text = $"만족도 : {satisfaction:0.##}";
     }
 }

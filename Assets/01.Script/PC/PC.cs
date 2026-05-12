@@ -5,6 +5,7 @@ using TMPro;
 public class PC : MonoBehaviour
 {
     private const string DefaultLevelTableResourcePath = "PcLevelTable";
+    private const float MinimumUsingDuration = 0.1f;
 
     private static PcLevelTableSO cachedDefaultLevelTable;
     private static bool hasLoggedMissingLevelTable;
@@ -17,6 +18,9 @@ public class PC : MonoBehaviour
     public float usingTime;
     public float earningTime = 20f;
     public Transform interactionPos;
+    [SerializeField, Min(1)] private int gpuLevel = 1;
+    [SerializeField, Min(1)] private int cpuLevel = 1;
+    [SerializeField, Min(1)] private int ssdLevel = 1;
 
     [Min(0)] public int currentExperience;
     [Min(1)] public int expPerCompletedSession = 10;
@@ -52,12 +56,14 @@ public class PC : MonoBehaviour
 
     public bool UpdateUsingTimer()
     {
+        float effectiveEarningTime = GetEffectiveUsingTime();
+
         if (!isUsagePaused)
         {
             usingTime += Time.deltaTime;
         }
 
-        float value = usingTime / earningTime;
+        float value = usingTime / effectiveEarningTime;
 
         if (slider != null)
         {
@@ -81,6 +87,24 @@ public class PC : MonoBehaviour
     public void AddSessionExp()
     {
         AddExp(expPerCompletedSession);
+    }
+
+    public bool ApplyUpgrade(PCUpgradeDataSO upgradeData)
+    {
+        if (upgradeData == null)
+        {
+            return false;
+        }
+
+        IncreaseUpgradeLevel(upgradeData.type);
+
+        int expBonus = Mathf.RoundToInt(upgradeData.ExpBonus);
+        if (expBonus > 0)
+        {
+            AddExp(expBonus);
+        }
+
+        return true;
     }
 
     public void AddExp(int amount)
@@ -220,5 +244,38 @@ public class PC : MonoBehaviour
         }
 
         return GetRequiredExp(currentLevel + 1);
+    }
+
+    public float GetEffectiveUsingTime()
+    {
+        float reductionRate = PCUpgradeDataSO.CalculateSsdUsingTimeReductionRate(ssdLevel);
+        return Mathf.Max(MinimumUsingDuration, earningTime * (1f - reductionRate));
+    }
+
+    public int GetUsageFee(int basePrice)
+    {
+        float bonusRate = PCUpgradeDataSO.CalculateGpuIncomeBonusRate(gpuLevel);
+        return Mathf.Max(0, Mathf.RoundToInt(basePrice * (1f + bonusRate)));
+    }
+
+    public float GetSatisfactionGain()
+    {
+        return PCUpgradeDataSO.CalculateCpuSatisfactionBonus(cpuLevel);
+    }
+
+    private void IncreaseUpgradeLevel(PCUpgradeDataSO.UpgradeType upgradeType)
+    {
+        switch (upgradeType)
+        {
+            case PCUpgradeDataSO.UpgradeType.GPU:
+                gpuLevel = Mathf.Max(1, gpuLevel + 1);
+                break;
+            case PCUpgradeDataSO.UpgradeType.CPU:
+                cpuLevel = Mathf.Max(1, cpuLevel + 1);
+                break;
+            case PCUpgradeDataSO.UpgradeType.SSD:
+                ssdLevel = Mathf.Max(1, ssdLevel + 1);
+                break;
+        }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class GetUpgradeSO : MonoBehaviour
 {
-    public PCUpgradeDataSO UpgradeDataSO;
+    public PCUpgradeDataSO upgradeDataSO;
 
     private Button cachedButton;
 
@@ -29,12 +29,12 @@ public class GetUpgradeSO : MonoBehaviour
 
     private void HandleUpgradeButtonClicked()
     {
-        if (UpgradeDataSO == null)
+        if (upgradeDataSO == null)
         {
             Debug.LogWarning($"No upgrade data is assigned for {name}.");
             return;
         }
-        if(GameManager.instance.money >= UpgradeDataSO.cost)
+        if(GameManager.instance.money >= upgradeDataSO.cost)
         {
             Pc_Upgrade pcUpgrade = GetComponentInParent<Pc_Upgrade>(true);
             if (pcUpgrade == null)
@@ -48,7 +48,10 @@ public class GetUpgradeSO : MonoBehaviour
                 return;
             }
 
-            pcUpgrade.ApplyUpgrade(UpgradeDataSO);
+            if (pcUpgrade.ApplyUpgrade(upgradeDataSO))
+            {
+                GameManager.instance.money -= upgradeDataSO.cost;
+            }
         }
         else
         {
