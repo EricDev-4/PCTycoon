@@ -91,6 +91,7 @@ public class UnitTapController : MonoBehaviour
         if (!kitchen.TryCookAssignedOrder(out FoodSO cookedFood, out UnitFSM targetUnit)) return;
 
         SpawnCookedFood(cookedFood, servingSlot, targetUnit);
+        orderListUI?.RemoveOrder(targetUnit);
     }
 
     private bool TryGetMoney()
@@ -171,7 +172,6 @@ public class UnitTapController : MonoBehaviour
             }
 
             pendingOrders.Dequeue();
-            orderListUI?.RemoveOrder(nextOrder.Unit);
             return true;
         }
 

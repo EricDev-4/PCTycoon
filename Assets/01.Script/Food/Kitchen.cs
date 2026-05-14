@@ -21,6 +21,7 @@ public class Kitchen : MonoBehaviour
     [SerializeField] private Transform cookingIconStartPos;
     [SerializeField] private Transform cookingIconEndPos;
     private Slider slider;
+    private Sequence cookingIconSequence;
     // private SelectFoodSender[] foodSenders;
     #endregion
 
@@ -28,6 +29,8 @@ public class Kitchen : MonoBehaviour
     private const float CookingIconHideDuration = 0.3f;
 
     private float time = 0;
+    [SerializeField] [Min(0f)] private float nextCookDelay = 1f;
+    private float nextOrderAvailableTime;
 
     public bool IsIdle => currentOrderFood == null || currentOrderUnit == null;
 
@@ -80,7 +83,7 @@ public class Kitchen : MonoBehaviour
         }
 
         RectTransform iconRect = cookingIconImage.rectTransform;
-        iconRect.DOKill();
+        KillCookingIconTween();
 
         if (cookingIconStartPos != null)
         {
@@ -98,13 +101,13 @@ public class Kitchen : MonoBehaviour
 
     private void ShowCookingIcon(FoodSO food)
     {
-        if (cookingIconImage == null)
+        if (cookingIconImage == null || food == null)
         {
             return;
         }
 
         RectTransform iconRect = cookingIconImage.rectTransform;
-        iconRect.DOKill();
+        KillCookingIconTween();
 
         if (cookingIconStartPos != null)
         {
@@ -119,10 +122,11 @@ public class Kitchen : MonoBehaviour
             ? cookingIconEndPos.localPosition
             : iconRect.localPosition;
 
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconShowDuration).SetEase(Ease.OutBack));
-        sequence.Join(iconRect.DOScale(1.08f, CookingIconShowDuration * 0.6f).SetEase(Ease.OutBack));
-        sequence.Append(iconRect.DOScale(1f, CookingIconShowDuration * 0.25f).SetEase(Ease.OutQuad));
+        cookingIconSequence = DOTween.Sequence();
+        cookingIconSequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconShowDuration).SetEase(Ease.OutBack));
+        cookingIconSequence.Join(iconRect.DOScale(1.08f, CookingIconShowDuration * 0.6f).SetEase(Ease.OutBack));
+        cookingIconSequence.Append(iconRect.DOScale(1f, CookingIconShowDuration * 0.25f).SetEase(Ease.OutQuad));
+        cookingIconSequence.OnKill(() => cookingIconSequence = null);
     }
 
     private void HideCookingIcon()
@@ -133,26 +137,28 @@ public class Kitchen : MonoBehaviour
         }
 
         RectTransform iconRect = cookingIconImage.rectTransform;
-        iconRect.DOKill();
+        KillCookingIconTween();
+        cookingIconImage.gameObject.SetActive(true);
 
         Vector3 targetLocalPosition = cookingIconStartPos != null
             ? cookingIconStartPos.localPosition
             : iconRect.localPosition;
 
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconHideDuration).SetEase(Ease.InBack));
-        sequence.Join(iconRect.DOScale(0.85f, CookingIconHideDuration).SetEase(Ease.InBack));
-        sequence.OnComplete(() =>
+        cookingIconSequence = DOTween.Sequence();
+        cookingIconSequence.Append(iconRect.DOLocalMove(targetLocalPosition, CookingIconHideDuration).SetEase(Ease.InBack));
+        cookingIconSequence.Join(iconRect.DOScale(0.85f, CookingIconHideDuration).SetEase(Ease.InBack));
+        cookingIconSequence.OnComplete(() =>
         {
             iconRect.localScale = Vector3.one;
             cookingIconImage.sprite = null;
             cookingIconImage.gameObject.SetActive(false);
         });
+        cookingIconSequence.OnKill(() => cookingIconSequence = null);
     }
 
     public bool TryAssignOrder(FoodSO food, UnitFSM unit)
     {
-        if (food == null || unit == null || !IsIdle)
+        if (food == null || unit == null || !IsIdle || IsCookDelayActive())
         {
             return false;
         }
@@ -202,8 +208,32 @@ public class Kitchen : MonoBehaviour
 
         cookedFood = currentOrderFood;
         targetUnit = currentOrderUnit;
+        BeginNextCookDelay();
         ClearCurrentOrder(true);
         return true;
+    }
+
+    private void BeginNextCookDelay()
+    {
+        nextOrderAvailableTime = Time.time + nextCookDelay;
+    }
+
+    private bool IsCookDelayActive()
+    {
+        return Time.time < nextOrderAvailableTime;
+    }
+
+    private void KillCookingIconTween()
+    {
+        cookingIconSequence?.Kill();
+        cookingIconSequence = null;
+
+        if (cookingIconImage == null)
+        {
+            return;
+        }
+
+        cookingIconImage.rectTransform.DOKill();
     }
 
     private void ClearCurrentOrder(bool animateHideIcon)

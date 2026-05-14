@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class UnitFSM : MonoBehaviour
 {
+    private const string MoneySpawnBoundaryNamePrefix = "WallColl";
+    private const float MoneySpawnPadding = 0.1f;
+
     #region States
     private StateMachine unitMachine = new StateMachine();
     private IState enteringState = new EnteringState();
@@ -314,11 +317,121 @@ public class UnitFSM : MonoBehaviour
             ins = Instantiate(moneySO.prefab, targetPos, Quaternion.identity);
         }
 
+        ClampMoneySpawnPosition(ins);
+
         MoneyPickup moneyPickup = ins.GetComponentInChildren<MoneyPickup>(true);
         if (moneyPickup != null)
         {
             moneyPickup.SetPrice(spawnPrice);
         }
+    }
+
+    private void ClampMoneySpawnPosition(GameObject moneyObject)
+    {
+        if (moneyObject == null) return;
+        if (!TryGetMoneySpawnBounds(out Bounds spawnBounds)) return;
+
+        Collider2D moneyCollider = moneyObject.GetComponent<Collider2D>()
+            ?? moneyObject.GetComponentInChildren<Collider2D>(true);
+
+        Vector3 currentPosition = moneyObject.transform.position;
+        if (moneyCollider == null)
+        {
+            moneyObject.transform.position = new Vector3(
+                Mathf.Clamp(currentPosition.x, spawnBounds.min.x, spawnBounds.max.x),
+                Mathf.Clamp(currentPosition.y, spawnBounds.min.y, spawnBounds.max.y),
+                currentPosition.z);
+            return;
+        }
+
+        Bounds moneyBounds = moneyCollider.bounds;
+        float minX = spawnBounds.min.x + moneyBounds.extents.x + MoneySpawnPadding;
+        float maxX = spawnBounds.max.x - moneyBounds.extents.x - MoneySpawnPadding;
+        float minY = spawnBounds.min.y + moneyBounds.extents.y + MoneySpawnPadding;
+        float maxY = spawnBounds.max.y - moneyBounds.extents.y - MoneySpawnPadding;
+
+        if (minX > maxX)
+        {
+            float centerX = spawnBounds.center.x;
+            minX = centerX;
+            maxX = centerX;
+        }
+
+        if (minY > maxY)
+        {
+            float centerY = spawnBounds.center.y;
+            minY = centerY;
+            maxY = centerY;
+        }
+
+        Vector3 currentCenter = moneyBounds.center;
+        Vector3 clampedCenter = new Vector3(
+            Mathf.Clamp(currentCenter.x, minX, maxX),
+            Mathf.Clamp(currentCenter.y, minY, maxY),
+            currentCenter.z);
+
+        moneyObject.transform.position += clampedCenter - currentCenter;
+    }
+
+    private bool TryGetMoneySpawnBounds(out Bounds bounds)
+    {
+        if (TryGetWallBoundaryBounds(out bounds))
+        {
+            return true;
+        }
+
+        return TryGetCameraBounds(out bounds);
+    }
+
+    private bool TryGetWallBoundaryBounds(out Bounds bounds)
+    {
+        bounds = default;
+
+        Collider2D[] colliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D collider = colliders[i];
+            if (collider == null || !collider.enabled || collider.isTrigger)
+            {
+                continue;
+            }
+
+            if (!collider.gameObject.name.StartsWith(MoneySpawnBoundaryNamePrefix))
+            {
+                continue;
+            }
+
+            if (bounds.size == Vector3.zero)
+            {
+                bounds = collider.bounds;
+            }
+            else
+            {
+                bounds.Encapsulate(collider.bounds);
+            }
+        }
+
+        return bounds.size != Vector3.zero;
+    }
+
+    private bool TryGetCameraBounds(out Bounds bounds)
+    {
+        bounds = default;
+
+        Camera targetCamera = Camera.main;
+        if (targetCamera == null || !targetCamera.orthographic)
+        {
+            return false;
+        }
+
+        float cameraHeight = targetCamera.orthographicSize * 2f;
+        float cameraWidth = cameraHeight * targetCamera.aspect;
+        Vector3 cameraPosition = targetCamera.transform.position;
+
+        bounds = new Bounds(
+            new Vector3(cameraPosition.x, cameraPosition.y, 0f),
+            new Vector3(cameraWidth, cameraHeight, 0f));
+        return true;
     }
 
 
