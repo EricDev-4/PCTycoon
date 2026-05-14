@@ -5,7 +5,8 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "PCUpgrade", menuName = "SO/PCUpgrade", order = int.MaxValue)]
 public class PCUpgradeDataSO : ScriptableObject
 {
-    private const float DefaultPercentBonus = 100f;
+    private const float BasePercentValue = 100f;
+    private const float DefaultPercentDelta = 0f;
 
     public enum UpgradeType
     {
@@ -19,10 +20,10 @@ public class PCUpgradeDataSO : ScriptableObject
     {
         public int cost;
         public float ExpBonus;
-        public float incomeBonus = DefaultPercentBonus;
+        public float incomeBonus = DefaultPercentDelta;
         [FormerlySerializedAs("satisfactionBonus")]
         public int satisfactionPointGain;
-        public float decresingUsingTimePercent = DefaultPercentBonus;
+        public float decresingUsingTimePercent = DefaultPercentDelta;
     }
 
     public UpgradeType type;
@@ -51,9 +52,14 @@ public class PCUpgradeDataSO : ScriptableObject
 
     public float GetIncomeBonusPercent(int level)
     {
-        return TryGetTier(level, out UpgradeTier tier) && tier.incomeBonus > 0f
-            ? tier.incomeBonus
-            : DefaultPercentBonus;
+        return BasePercentValue + GetIncomeBonusDeltaPercent(level);
+    }
+
+    public float GetIncomeBonusDeltaPercent(int level)
+    {
+        return TryGetTier(level, out UpgradeTier tier)
+            ? Mathf.Max(0f, tier.incomeBonus)
+            : DefaultPercentDelta;
     }
 
     public int GetSatisfactionPointGain(int level)
@@ -63,11 +69,34 @@ public class PCUpgradeDataSO : ScriptableObject
             : 0;
     }
 
+    public int GetSatisfactionPointGainDelta(int level)
+    {
+        int currentGain = GetSatisfactionPointGain(level);
+        int baseGain = GetSatisfactionPointGain(1);
+        return Mathf.Max(0, currentGain - baseGain);
+    }
+
+    public float GetSatisfactionPointGainPercentFromBase(int level)
+    {
+        int baseGain = GetSatisfactionPointGain(1);
+        if (baseGain <= 0)
+        {
+            return 0f;
+        }
+
+        return (GetSatisfactionPointGainDelta(level) / (float)baseGain) * BasePercentValue;
+    }
+
     public float GetUsingTimePercent(int level)
     {
-        return TryGetTier(level, out UpgradeTier tier) && tier.decresingUsingTimePercent > 0f
-            ? tier.decresingUsingTimePercent
-            : DefaultPercentBonus;
+        return BasePercentValue + GetUsingTimeReductionDeltaPercent(level);
+    }
+
+    public float GetUsingTimeReductionDeltaPercent(int level)
+    {
+        return TryGetTier(level, out UpgradeTier tier)
+            ? Mathf.Max(0f, tier.decresingUsingTimePercent)
+            : DefaultPercentDelta;
     }
 
     public bool TryGetTier(int level, out UpgradeTier tier)

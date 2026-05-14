@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoneyPickup
   price: 0
+  MoneyEffectText: {fileID: 3473876159599405020, guid: a6ae55772ed7d7a4d92d0c89b728327f, type: 3}
 --- !u!50 &219837108306290748
 Rigidbody2D:
   serializedVersion: 5

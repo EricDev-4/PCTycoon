@@ -16,26 +16,26 @@ MonoBehaviour:
   tiers:
   - cost: 0
     ExpBonus: 0
-    incomeBonus: 100
+    incomeBonus: 0
     satisfactionPointGain: 0
-    decresingUsingTimePercent: 100
+    decresingUsingTimePercent: 0
   - cost: 300
     ExpBonus: 30
-    incomeBonus: 100
+    incomeBonus: 0
     satisfactionPointGain: 0
-    decresingUsingTimePercent: 106
+    decresingUsingTimePercent: 6
   - cost: 500
     ExpBonus: 50
-    incomeBonus: 100
+    incomeBonus: 0
     satisfactionPointGain: 0
-    decresingUsingTimePercent: 113
+    decresingUsingTimePercent: 13
   - cost: 800
     ExpBonus: 80
-    incomeBonus: 100
+    incomeBonus: 0
     satisfactionPointGain: 0
-    decresingUsingTimePercent: 121
+    decresingUsingTimePercent: 21
   - cost: 1200
     ExpBonus: 130
-    incomeBonus: 100
+    incomeBonus: 0
     satisfactionPointGain: 0
-    decresingUsingTimePercent: 200
+    decresingUsingTimePercent: 100

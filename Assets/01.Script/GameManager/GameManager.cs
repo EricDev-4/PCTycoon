@@ -5,6 +5,8 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
+    private const float SatisfactionDisplayDivisor = 10f;
+
     public static GameManager instance;
     public static event System.Action<int> OnMoneyChanged;
 
@@ -126,6 +128,16 @@ public class GameManager : MonoBehaviour
         lastSatisfactionPoint = satisfactionPoint;
 
         if (satisfactionText == null) return;
-        satisfactionText.text = $"\uB9CC\uC871\uB3C4 : {satisfactionPoint}";
+        satisfactionText.text = $"\uB9CC\uC871\uB3C4 : {FormatDisplayedSatisfaction(satisfactionPoint)}";
+    }
+
+    public static float GetDisplayedSatisfactionValue(int satisfactionPoints)
+    {
+        return Mathf.Max(0, satisfactionPoints) / SatisfactionDisplayDivisor;
+    }
+
+    public static string FormatDisplayedSatisfaction(int satisfactionPoints)
+    {
+        return GetDisplayedSatisfactionValue(satisfactionPoints).ToString("0.0");
     }
 }

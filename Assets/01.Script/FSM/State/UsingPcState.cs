@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class UsingPcState : IState
 {
+    private const float FoodOrderChance = 0.5f;
+
     private UnitFSM owner;
     private bool isRequesting = false;
+    private bool hasProcessedOrderChance = false;
     private int requestTime;
     private float requestWaitTime = 0f;
     [SerializeField] private float maxWaitTime = 10f;
@@ -12,6 +15,7 @@ public class UsingPcState : IState
     {
         this.owner = owner;
         isRequesting = false;
+        hasProcessedOrderChance = false;
         requestWaitTime = 0f;
 
         owner.ResetInteractionState();
@@ -43,9 +47,17 @@ public class UsingPcState : IState
 
         if (!isRequesting)
         {
-            if ((int)owner.targetPC.usingTime == requestTime)
+            if (!hasProcessedOrderChance && (int)owner.targetPC.usingTime == requestTime)
             {
+                hasProcessedOrderChance = true;
+
+                if (Random.value > FoodOrderChance)
+                {
+                    return;
+                }
+
                 isRequesting = true;
+                owner.targetPC.SetUsagePaused(true);
 
                 if (owner.textBubble != null)
                 {
@@ -75,9 +87,19 @@ public class UsingPcState : IState
 
         if (owner.isServed)
         {
+            owner.targetPC.SetUsagePaused(false);
             owner.ResetInteractionState();
             requestWaitTime = 0f;
             isRequesting = false;
+            return;
+        }
+
+        bool isAwaitingOrderAcceptance = owner.interactiveColl != null
+            ? owner.interactiveColl.enabled
+            : owner.textBubble != null && owner.textBubble.gameObject.activeSelf;
+
+        if (!isAwaitingOrderAcceptance)
+        {
             return;
         }
 
@@ -89,10 +111,10 @@ public class UsingPcState : IState
 
         if (requestWaitTime >= maxWaitTime)
         {
-            if (owner.interactiveColl != null)
-            {
-                owner.interactiveColl.enabled = false;
-            }
+            owner.targetPC.SetUsagePaused(false);
+            owner.ResetInteractionState();
+            requestWaitTime = 0f;
+            isRequesting = false;
         }
     }
 
